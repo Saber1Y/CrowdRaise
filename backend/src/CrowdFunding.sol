@@ -128,7 +128,7 @@ contract CrowdFunding {
     }
 
     // Get the contribution amount for a given campaign ID and contributor
-//     function getContribution(uint256 _id) public view returns (uint256) {
-//         return contributions[_id][msg.sender];
-//     }
+    function getContribution(uint256 _id) public view returns (uint256) {
+        return contributions[_id][msg.sender];
+    }
 }
