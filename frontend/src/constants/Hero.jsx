@@ -7,7 +7,7 @@ const Hero = () => {
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
-      {/* Content */}
+
       <div className="relative z-10 text-center">
         <h1 className="font-bold text-[60px] mb-4">
           <span className="text-[#13ADB7]">Happiness</span> Comes <br /> from{" "}
@@ -16,13 +16,13 @@ const Hero = () => {
         <p className="mb-8 text-[16px]">
           Be a part of the breakthrough and make someone’s dream come true.
         </p>
-        {/* Centering buttons */}
+
         <div className="flex justify-center items-center space-x-4">
-          <button className="bg-blue-500 px-4 py-2 text-white rounded">
-            Hellooooo
+          <button className="bg-[#13ADB7] px-10 py-3 text-[18px] text-white rounded-full">
+            Donate now
           </button>
-          <button className="bg-blue-500 px-4 py-2 text-white rounded">
-            Hiiii
+          <button className="px-10 py-3 text-[18px] text-white border border-white rounded-full">
+            Watch now
           </button>
         </div>
       </div>
