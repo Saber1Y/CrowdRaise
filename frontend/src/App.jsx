@@ -1,6 +1,6 @@
 import "./App.css";
-import Navbar from "./constants/Navbar";
 import Hero from "./constants/Hero";
+import Navbar from "./constants/Navbar";
 
 function App() {
   return (
