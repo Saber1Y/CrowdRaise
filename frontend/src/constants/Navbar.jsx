@@ -3,7 +3,7 @@ import LOGO from "../../public/LOGO.png";
 
 const Navbar = () => {
   return (
-    <section className="flex justify-around mt-4 bg-[url('/hero.png')] bg-center bg-cover min-h-100px">
+    <section className="flex justify-around mt-4 bg-[url('/hero.png')] bg-center bg-cover min-h-screen">
       <div className="flex space-x-2 items-center">
         <img src={LOGO} className="w-[25px] h-[25px]" />
         <span className="text-[20px] font-semi-bold leading-tight]">
