@@ -3,7 +3,7 @@ import LOGO from "../../public/LOGO.png";
 
 const Navbar = () => {
   return (
-    <section className="flex justify-around mt-4 ">
+    <nav className="absolute top-0 left-0 w-full flex justify-between items-center p-6 z-20 text-white">
       <div className="flex space-x-2 items-center">
         <img src={LOGO} className="w-[25px] h-[25px]" />
         <span className="text-[20px] font-semi-bold leading-tight]">
@@ -16,7 +16,7 @@ const Navbar = () => {
         <li>Disaster</li>
         <li>Event</li>
       </ul>
-    </section>
+    </nav>
   );
 };
 

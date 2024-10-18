@@ -3,10 +3,9 @@ import Navbar from "./Navbar";
 
 const Hero = () => {
   return (
-    <section className="relative bg-[url('/hero.png')] bg-center bg-cover min-h-screen flex flex-col justify-center items-center text-white">
-      {/* Background overlay */}
+    <section className="relative bg-[url('/hero.png')] bg-center bg-cover min-h-screen flex items-center justify-center text-white">
+      <Navbar />
       <div className="absolute inset-0 bg-black opacity-50"></div>
-
 
       <div className="relative z-10 text-center">
         <h1 className="font-bold text-[60px] mb-4">
