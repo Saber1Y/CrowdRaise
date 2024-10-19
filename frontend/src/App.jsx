@@ -1,14 +1,16 @@
 import "./App.css";
+import CardList from "./constants/CardList";
 import Donations from "./constants/Donations";
+import FilterList from "./constants/FilterList";
 import Hero from "./constants/Hero";
-// import Navbar from "./constants/Navbar";
 
 function App() {
   return (
     <>
-      {/* <Navbar /> */}
       <Hero />
       <Donations />
+      <FilterList />
+      <CardList />
     </>
   );
 }
