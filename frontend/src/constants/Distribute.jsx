@@ -4,7 +4,11 @@ import { BiMinus } from "react-icons/bi";
 import { BsPlusLg } from "react-icons/bs";
 
 const Distribute = () => {
-  const [openFaq, setOpenFaq] = useState("");
+  const [openFaq, setOpenFaq] = useState("null");
+
+  const handleToggle = (id) => {
+    setOpenFaq(openFaq === id ? null : id);
+  };
 
   const faqs = [
     {
@@ -16,20 +20,17 @@ const Distribute = () => {
     {
       id: 2,
       question: "Why use Open Data services?",
-      answer:
-        "Urbanpay provides real-time pricing for rides. Similarly, we provide real-time pricing for public transport in your city, often displaying current fares.",
+      answer: "Test",
     },
     {
       id: 3,
       question: "Can Open Data be accessed by the public?",
-      answer:
-        "Yes, you can use Urbanpay almost anywhere in the world, provided you have an internet connection.",
+      answer: "Test",
     },
     {
       id: 4,
-      question: "How do I contribute to Open Data?",
-      answer:
-        "Urbanpay protects your assets through encryption, secure authentication (like 2FA), and regular security updates to safeguard data and prevent unauthorized access. We also use secure storage, monitoring, and compliance with security standards to enhance protection.",
+      question: "Can Open Data be accessed by the public?",
+      answer: "Test",
     },
   ];
   return (
@@ -344,45 +345,52 @@ const Distribute = () => {
           </svg>
         </div>
 
-        <div className="flex flex-col">
-          <p>
-            Open Data is the idea that some data should be freely
-            <br /> available for everyone to use and republish as they see fit,
-            <br />
-            without restrictions from copyright, patents, or other control
-            <br />
-            mechanisms. Read more
-          </p>
+        <div className="flex flex-col text-[18px]">
           <div className="w-full h-auto py-10 bg-white">
-            <h1 className="text-center text-4xl font-bold mb-8">
-              Frequently Asked Questions
-            </h1>
-            <div className="max-w-3xl mx-auto px-8">
-              {faqs.map((faq) => (
-                <div key={faq.id} className="mb-4" data-aos="fade-up">
-                  <div
-                    className="w-full bg-[#F4F4F5] flex items-center justify-between p-4 rounded-lg shadow-md cursor-pointer hover:bg-[#eaeaea] transition-all duration-300"
-                    // onClick={() => handleToggle(faq.id)}
-                  >
-                    <span className="text-black py-4 text-lg font-medium">
-                      {faq.question}
-                    </span>
-                    {openFaq === faq.id ? (
-                      <BiMinus className="text-black" />
-                    ) : (
-                      <BsPlusLg className="text-black" />
-                    )}
-                  </div>
-                  {openFaq === faq.id && (
-                    <div
-                      className="w-full bg-white p-4 mt-2 rounded-lg shadow-inner"
-                      data-aos="fade-down"
-                    >
-                      <p className="text-black text-md">{faq.answer}</p>
+            <div className="flex flex-col text-[18px]">
+              <p>
+                Open Data is the idea that some data should be freely
+                <br /> available for everyone to use and republish as they see
+                fit,
+                <br />
+                without restrictions from copyright, patents, or other control
+                <br />
+                mechanisms.{" "}
+                <a href="#" className="text-blue-500 underline">
+                  Read more
+                </a>
+              </p>
+
+              <div className="w-full h-auto py-10 bg-white">
+                <h1 className="text-center text-4xl font-bold mb-8">
+                  Frequently Asked Questions
+                </h1>
+
+                <div className="w-full max-w-3xl mx-auto px-8">
+                  {faqs.map((faq) => (
+                    <div key={faq.id} className="mb-4">
+                      <div
+                        className=" bg-[#F4F4F5] flex items-center justify-between p-4 rounded-lg shadow-md cursor-pointer hover:bg-[#eaeaea] transition-all duration-300"
+                        onClick={() => handleToggle(faq.id)}
+                      >
+                        <span className="text-black py-3 text-lg font-medium">
+                          {faq.question}
+                        </span>
+                        {openFaq === faq.id ? (
+                          <BiMinus className="text-black" />
+                        ) : (
+                          <BsPlusLg className="text-black" />
+                        )}
+                      </div>
+                      {openFaq === faq.id && (
+                        <div className="bg-white p-4 mt-2 rounded-lg shadow-inner">
+                          <p className="text-black">{faq.answer}</p>
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>
