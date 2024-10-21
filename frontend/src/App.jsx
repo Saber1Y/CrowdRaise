@@ -1,5 +1,6 @@
 import "./App.css";
 import CardList from "./constants/CardList";
+import Distribute from "./constants/Distribute";
 import Donations from "./constants/Donations";
 import FilterList from "./constants/FilterList";
 import Footer from "./constants/Footer";
@@ -12,6 +13,7 @@ function App() {
       <Donations />
       <FilterList />
       <CardList />
+      <Distribute />
       <Footer />
     </>
   );
