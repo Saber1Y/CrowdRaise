@@ -10,12 +10,12 @@ const Navbar = () => {
           CrowdRaise
         </span>
       </div>
-      <ul className="flex justify-center space-x-4 text-[18px] font-medium cursor-pointer">
+      {/* <ul className="flex justify-center space-x-4 text-[18px] font-medium cursor-pointer">
         <li>Home</li>
         <li>Charity</li>
         <li>Disaster</li>
         <li>Event</li>
-      </ul>
+      </ul> */}
     </nav>
   );
 };

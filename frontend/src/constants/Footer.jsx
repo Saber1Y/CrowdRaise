@@ -6,7 +6,7 @@ const Footer = () => {
   const links = ["Partners", "How-to", "HelpDesk", "Community"];
 
   return (
-    <footer className="bg-black text-white flex flex-row justify-around p-6">
+    <footer className="bg-black text-white flex flex-col md:flex-row justify-around p-6">
       {/* Links section */}
       {Array(2)
         .fill(null)

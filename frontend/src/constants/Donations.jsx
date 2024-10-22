@@ -1,15 +1,16 @@
 import React from "react";
 
 const Donations = () => {
-  const handleSearch = () => {
-    e.preventDefault();
-  };
+  // const handleSearch = () => {
+  //   e.preventDefault();
+  // };
+
   return (
     <section className="flex flex-col items-center justify-center my-10">
       <h1 className="font-bold text-[32px]">
-        Open <span className="text-[#13ADB7]">donation</span>
+        Open <span className="text-[#13ADB7]">Donations</span>
       </h1>
-      <form onClick={handleSearch} className="">
+      {/* <form onClick={handleSearch} className="">
         <div className="relative">
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg
@@ -36,7 +37,7 @@ const Donations = () => {
             required
           />
         </div>
-      </form>
+      </form> */}
     </section>
   );
 };
