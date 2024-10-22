@@ -8,11 +8,11 @@ const Hero = () => {
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
       <div className="relative z-10 text-center">
-        <h1 className="font-bold text-[60px] mb-4">
+        <h1 className="font-bold text-[65px] mb-4 font-sans">
           <span className="text-[#13ADB7]">Happiness</span> Comes <br /> from{" "}
           <span className="text-[#13ADB7]">your action</span>
         </h1>
-        <p className="mb-8 text-[16px]">
+        <p className="mb-8 text-[18px]">
           Be a part of the breakthrough and make someone’s dream come true.
         </p>
 

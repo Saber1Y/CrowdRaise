@@ -55,6 +55,7 @@ const Distribute = () => {
             width={497}
             height={742}
             fill="none"
+            className="cursor-pointer"
           >
             <path fill="#13ADB7" d="M63 28h159v642H63z" />
             <g filter="url(#a)">

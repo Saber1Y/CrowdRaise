@@ -12,7 +12,7 @@ const Footer = () => {
         .fill(null)
         .map((_, index) => (
           <div key={index} className="flex flex-col">
-            <h3 className="font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-bold text-2xl mb-4 ">Quick Links</h3>
             <ul>
               {links.map((link, i) => (
                 <li key={i} className="mb-2 hover:underline cursor-pointer">
@@ -23,11 +23,11 @@ const Footer = () => {
           </div>
         ))}
 
-
       <div className="flex flex-col space-y-5">
-        <h3 className="font-semibold mb-4">Our Office</h3>
+        <h3 className="font-bold text-2xl mb-4">Our Office</h3>
         <address className="not-italic">
-          Jalan Rambu Raya Timur No. 18, Kota Administrasi, Jakarta Pusat.
+          Jalan Rambu Raya Timur No. 18,
+          <br /> Kota Administrasi, Jakarta Pusat.
           <br />
           ZIP: 10000
         </address>
