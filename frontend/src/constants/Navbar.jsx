@@ -1,5 +1,7 @@
 import React from "react";
 import LOGO from "../../public/LOGO.png";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 
 const Navbar = () => {
   return (
@@ -10,6 +12,8 @@ const Navbar = () => {
           CrowdRaise
         </span>
       </div>
+      
+      <ConnectButton />
       {/* <ul className="flex justify-center space-x-4 text-[18px] font-medium cursor-pointer">
         <li>Home</li>
         <li>Charity</li>
