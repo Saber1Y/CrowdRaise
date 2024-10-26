@@ -36,7 +36,7 @@ const Distribute = () => {
   return (
     <section className="mt-10">
       <div className="flex flex-col md:flex-row justify-around items-center">
-        <div className="flex flex-col">
+        <div className="flex flex-col" data-aos="fade-left">
           <h2 className="my-10 ml-14">
             <p className="text-[16px]">MODERN CROWDFUNDING PLATFORM</p>
 
@@ -346,7 +346,7 @@ const Distribute = () => {
           </svg>
         </div>
 
-        <div className="flex flex-col text-[18px]">
+        <div className="flex flex-col text-[18px]" data-aos="fade-right">
           <div className="w-full h-auto py-10 bg-white">
             <div className="flex flex-col text-[18px]">
               <p>
