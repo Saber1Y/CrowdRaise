@@ -3,25 +3,25 @@ import { defineChain } from "viem";
 import { http } from "wagmi";
 import { mainnet, sepolia } from "wagmi/chains";
 
-const localhost = defineChain({
-  id: 31337,
-  name: "Avil",
-  nativeCurrency: {
-    decimals: 18,
-    name: "Ether",
-    symbol: "ETH",
-  },
-  rpcUrls: {
-    default: { http: ["http://127.0.0.1:8545"] },
-  },
-});
+// const localhost = defineChain({
+//   id: 31337,
+//   name: "Avil",
+//   nativeCurrency: {
+//     decimals: 18,
+//     name: "Ether",
+//     symbol: "ETH",
+//   },
+//   rpcUrls: {
+//     default: { http: ["http://127.0.0.1:8545"] },
+//   },
+// });
 
 export const config = getDefaultConfig({
   // export const config = createConfig({
-  appName: "BatchPay",
-  projectId: "Batch_next",
-  appDescription: "Batch Next Project",
-  chains: [mainnet, sepolia, localhost],
+  appName: "CrowdRaise",
+  projectId: "crowdraise",
+  appDescription: "crowdraise Project",
+  chains: [mainnet, sepolia, ],
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),

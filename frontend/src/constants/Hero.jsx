@@ -3,7 +3,7 @@ import Navbar from "./Navbar";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-const Hero = () => {
+const Hero = ({ contractAddress, abi }) => {
   useEffect(() => {
     AOS.init({
       duration: 1000, // Adjust animation duration
@@ -14,7 +14,7 @@ const Hero = () => {
 
   return (
     <section className="relative bg-[url('/hero.png')] bg-center bg-cover min-h-screen flex flex-col items-center justify-center text-white">
-      <Navbar  />
+      <Navbar />
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
       <div className="relative z-10 text-center" data-aos="zoom-in">
@@ -33,6 +33,7 @@ const Hero = () => {
           <button className="px-10 py-3  text-[15px] md:text-[18px] text-white border border-white rounded-full">
             Watch now
           </button>
+        
         </div>
       </div>
     </section>

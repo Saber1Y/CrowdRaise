@@ -5,6 +5,8 @@ import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { config } from "../src/constants/config";
 
+import crowdContract from "../src/Data/CrowdFunding.json";
+
 import Hero from "./constants/Hero";
 import CardList from "./constants/CardList";
 import Distribute from "./constants/Distribute";
@@ -12,16 +14,16 @@ import Donations from "./constants/Donations";
 import Footer from "./constants/Footer";
 import GroupImg from "./constants/GroupImg";
 
-// Initialize QueryClient instance
 const queryClient = new QueryClient();
 
 function App() {
+  const contractAddress = "0x90193C961A926261B756D1E5bb255e67ff9498A1";
+  const abi = crowdContract.abi;
   return (
-    // Wrap everything with QueryClientProvider
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <Hero />
+          <Hero contractAddress={contractAddress} abi={abi} />
           <Donations />
           <CardList />
           <Distribute />
