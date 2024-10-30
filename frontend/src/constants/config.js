@@ -25,6 +25,6 @@ export const config = getDefaultConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
-    [localhost.id]: http('http://127.0.0.1:8545'),
+    // [localhost.id]: http('http://127.0.0.1:8545'),
   },
 });

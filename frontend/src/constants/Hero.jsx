@@ -1,16 +1,22 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import CreateCampignForm from "../constants/CreateCampignForm";
 
-const Hero = ({ contractAddress, abi }) => {
+const Hero = ({}) => {
+  const [showForm, setShowForm] = useState(false);
+
   useEffect(() => {
     AOS.init({
-      duration: 1000, // Adjust animation duration
-      easing: "ease-in-out", // Choose an easing function
-      once: true, // Only animate once while scrolling down
+      duration: 1000,
+      easing: "ease-in-out",
+      once: true,
     });
   }, []);
+  const handleShowForm = () => {
+    setShowForm(true);
+  };
 
   return (
     <section className="relative bg-[url('/hero.png')] bg-center bg-cover min-h-screen flex flex-col items-center justify-center text-white">
@@ -27,13 +33,19 @@ const Hero = ({ contractAddress, abi }) => {
         </p>
 
         <div className="flex justify-center items-center space-x-4">
-          <button className="bg-[#13ADB7] px-10 py-3 text-[15px] md:text-[18px] text-white rounded-full">
-            Donate now
-          </button>
+          {!showForm && (
+            <button
+              onClick={handleShowForm}
+              className="create-campaign-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+            >
+              Create a New Campaign
+            </button>
+          )}
+
+          {showForm && <CreateCampignForm />}
           <button className="px-10 py-3  text-[15px] md:text-[18px] text-white border border-white rounded-full">
             Watch now
           </button>
-        
         </div>
       </div>
     </section>

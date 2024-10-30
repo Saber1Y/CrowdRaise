@@ -9,6 +9,7 @@ import crowdContract from "../src/Data/CrowdFunding.json";
 
 import Hero from "./constants/Hero";
 import CardList from "./constants/CardList";
+import CreateCampignForm from "./constants/CreateCampignForm";
 import Distribute from "./constants/Distribute";
 import Donations from "./constants/Donations";
 import Footer from "./constants/Footer";
@@ -23,7 +24,8 @@ function App() {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <Hero contractAddress={contractAddress} abi={abi} />
+          <Hero />
+          {/* <CreateCampignForm contractAddress={contractAddress} abi={abi} /> */}
           <Donations />
           <CardList />
           <Distribute />
