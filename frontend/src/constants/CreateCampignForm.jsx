@@ -1,47 +1,83 @@
 import React, { useState } from "react";
 import { useWriteContract } from "wagmi";
+import { ToastContainer, toast } from "react-toastify";
+import { formatEther, parseEther } from "viem";
+
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateCampignForm = ({ contractAddress, abi }) => {
   const [goal, setGoal] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
   const [duration, setDuration] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  const { write: createCampaign } = useWriteContract({
-    address: contractAddress,
-    abi: abi,
-    functionName: "createCampaign",
-    onSuccess: (data) => {
-      setIsLoading(false);
-      setSuccessMessage(
-        `Campaign created successfully! Transaction: ${data.hash}`
-      );
-    },
-    onError: (error) => {
-      setIsLoading(false);
-      setErrorMessage(`Error: ${error.message}`);
-    },
-  });
+  const {
+    writeContractAsync: createCampaign,
+    error: createError,
+    isLoading: isCreating,
+  } = useWriteContract();
 
-  const handleCreateCampaign = (e) => {
+  const handleCreateCampaign = async (e) => {
     e.preventDefault();
+
+    await createCampaign({
+      address: contractAddress,
+      abi: abi,
+      functionName: "createCampaign",
+      onSuccess: (data) => {
+        setIsLoading(false);
+        setSuccessMessage(
+          `Campaign created successfully! Transaction: ${data.hash}`
+        );
+      },
+    });
+
+    if (createError) {
+      toast.error(
+        `Failed to create campaign ${createError.message || "unknown error"}`
+      );
+      return;
+    }
+
+    toast.success("Campaign created successfully", {
+      position: "top-center",
+    });
+
     setIsLoading(true);
     setErrorMessage("");
     setSuccessMessage("");
 
-    // Call the createCampaign function with parsed goal and duration inputs
-    createCampaign({
-      args: [ethers.utils.parseEther(goal), duration],
-    });
   };
+
   return (
     <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-6 text-center">
         Create a New Campaign
       </h2>
 
-      <form onSubmit={handleCreateCampaign} className="space-y-4">
+      <form
+        onSubmit={handleCreateCampaign}
+        className="space-y-4 max-w-md mx-auto"
+      >
+        {/* Campaign Title */}
+        <div className="form-group">
+          <label className="block text-gray-700 font-semibold mb-1">
+            Campaign Title:
+          </label>
+          <input
+            type="text"
+            placeholder="Enter a catchy title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500      text-black"
+          />
+        </div>
+
         <div className="form-group">
           <label className="block text-gray-700 font-semibold mb-1">
             Campaign Goal (ETH):
@@ -52,7 +88,7 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
             value={goal}
             onChange={(e) => setGoal(e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500     text-black"
           />
         </div>
 
@@ -66,8 +102,50 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
             value={duration}
             onChange={(e) => setDuration(e.target.value)}
             required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500    text-black"
+          />
+        </div>
+
+        <div className="form-group">
+          <label className="block text-gray-700 font-semibold mb-1">
+            Campaign Description:
+          </label>
+          <textarea
+            placeholder="Describe the purpose of the campaign"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500   text-black"
+          />
+        </div>
+
+        {/* Image Upload */}
+        <div className="form-group">
+          <label className="block text-gray-700 font-semibold mb-1">
+            Campaign Image:
+          </label>
+          <input
+            type="file"
+            onChange={(e) => setImage(e.target.files[0])}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+
+        <div className="form-group">
+          <label className="block text-gray-700 font-semibold mb-1">
+            Category:
+          </label>
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            required
+          >
+            <option value="">Select a category</option>
+            <option value="Charity">Charity</option>
+            <option value="Innovation">Innovation</option>
+            <option value="Personal Project">Personal Project</option>
+          </select>
         </div>
 
         <button
@@ -79,6 +157,11 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
         >
           {isLoading ? "Creating..." : "Create Campaign"}
         </button>
+
+        {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+        {successMessage && (
+          <p className="text-green-500 mt-2">{successMessage}</p>
+        )}
       </form>
 
       {errorMessage && (
