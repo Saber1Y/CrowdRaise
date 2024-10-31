@@ -25,7 +25,7 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <Hero />
-          {/* <CreateCampignForm contractAddress={contractAddress} abi={abi} /> */}
+          <CreateCampignForm contractAddress={contractAddress} abi={abi} />
           <Donations />
           <CardList />
           <Distribute />
