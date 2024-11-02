@@ -41,7 +41,7 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
       });
 
       setSuccessMessage(
-        `Campaign created successfully! Transaction: ${data.hash}`
+        `Campaign created successfully! Transaction`
       );
       toast.success("Campaign created successfully", {
         position: "top-center",
