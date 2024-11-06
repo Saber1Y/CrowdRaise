@@ -10,7 +10,6 @@ import crowdContract from "../src/Data/CrowdFunding.json";
 import Hero from "./constants/Hero";
 import CardList from "./constants/CardList";
 import CreateCampignForm from "./constants/CreateCampignForm";
-// import CardDIsplay from "./constants/CardDIsplay";
 import Distribute from "./constants/Distribute";
 import Donations from "./constants/Donations";
 import Footer from "./constants/Footer";
@@ -27,7 +26,6 @@ function App() {
         <RainbowKitProvider>
           <Hero />
           <CreateCampignForm contractAddress={contractAddress} abi={abi} />
-          {/* <CardDIsplay contractAddress={contractAddress} abi={abi} /> */}
           <Donations />
           <CardList />
           <Distribute />

@@ -21,7 +21,7 @@ export const config = getDefaultConfig({
   appName: "CrowdRaise",
   projectId: "crowdraise",
   appDescription: "crowdraise Project",
-  chains: [mainnet, sepolia,],
+  chains: [mainnet, sepolia, localhost],
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
