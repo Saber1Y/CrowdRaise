@@ -10,7 +10,7 @@ import crowdContract from "../src/Data/CrowdFunding.json";
 import Hero from "./constants/Hero";
 import CardList from "./constants/CardList";
 import CreateCampignForm from "./constants/CreateCampignForm";
-import CardDIsplay from "./constants/CardDIsplay";
+// import CardDIsplay from "./constants/CardDIsplay";
 import Distribute from "./constants/Distribute";
 import Donations from "./constants/Donations";
 import Footer from "./constants/Footer";
@@ -19,7 +19,7 @@ import GroupImg from "./constants/GroupImg";
 const queryClient = new QueryClient();
 
 function App() {
-  const contractAddress = "0x90193C961A926261B756D1E5bb255e67ff9498A1";
+  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const abi = crowdContract.abi;
   return (
     <WagmiProvider config={config}>
@@ -27,7 +27,7 @@ function App() {
         <RainbowKitProvider>
           <Hero />
           <CreateCampignForm contractAddress={contractAddress} abi={abi} />
-          <CardDIsplay contractAddress={contractAddress} abi={abi} />
+          {/* <CardDIsplay contractAddress={contractAddress} abi={abi} /> */}
           <Donations />
           <CardList />
           <Distribute />

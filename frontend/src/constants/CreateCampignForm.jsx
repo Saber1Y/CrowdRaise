@@ -5,7 +5,7 @@ import { formatEther, parseEther } from "viem";
 
 import "react-toastify/dist/ReactToastify.css";
 
-const CreateCampignForm = ({ contractAddress, abi }) => {
+const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [goal, setGoal] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -14,8 +14,8 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-
   const [showForm, setShowForm] = useState(false);
+  const [titles, setTitles] = useState([]); // Initialize titles array
 
   const {
     writeContractAsync: createCampaign,
@@ -40,12 +40,20 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
         overrides: { gasLimit: 1000000 },
       });
 
-      setSuccessMessage(
-        `Campaign created successfully! Transaction`
-      );
+      setSuccessMessage("Campaign created successfully!");
       toast.success("Campaign created successfully", {
         position: "top-center",
       });
+
+      // Update titles array with new title
+      setTitles((prevTitles) => [...prevTitles, title]);
+
+      // Clear form fields
+      // setGoal("");
+      // setTitle("");
+      // setDescription("");
+      // setCategory("");
+      // setDuration("");
     } catch (error) {
       console.error("Error creating campaign:", error);
       setErrorMessage(
@@ -70,125 +78,113 @@ const CreateCampignForm = ({ contractAddress, abi }) => {
             Create a New Campaign
           </button>
         )}
-
-        {showForm && <CreateCampignForm />}
       </h2>
 
-      <form
-        // onSubmit={handleCreateCampaign}
-        className="space-y-4 max-w-md mx-auto"
-      >
-        {/* Campaign Title */}
-        <div className="form-group">
-          <label className="block text-gray-700 font-semibold mb-1">
-            Campaign Title:
-          </label>
-          <input
-            type="text"
-            placeholder="Enter a catchy title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500      text-black"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="block text-gray-700 font-semibold mb-1">
-            Campaign Goal (ETH):
-          </label>
-          <input
-            type="number"
-            placeholder="Enter goal amount in ETH"
-            value={goal}
-            onChange={(e) => setGoal(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500     text-black"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="block text-gray-700 font-semibold mb-1">
-            Duration (seconds):
-          </label>
-          <input
-            type="number"
-            placeholder="Enter duration in seconds"
-            value={duration}
-            onChange={(e) => setDuration(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500    text-black"
-          />
-        </div>
-
-        <div className="form-group">
-          <label className="block text-gray-700 font-semibold mb-1">
-            Campaign Description:
-          </label>
-          <textarea
-            placeholder="Describe the purpose of the campaign"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500   text-black"
-          />
-        </div>
-
-        {/* Image Upload */}
-        {/* <div className="form-group">
-          <label className="block text-gray-700 font-semibold mb-1">
-            Campaign Image:
-          </label>
-          <input
-            type="file"
-            onChange={(e) => setImage(e.target.files[0])}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div> */}
-
-        <div className="form-group">
-          <label className="block text-gray-700 font-semibold mb-1">
-            Category:
-          </label>
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            required
-          >
-            <option value="">Select a category</option>
-            <option value="Charity">Charity</option>
-            <option value="Innovation">Innovation</option>
-            <option value="Personal Project">Personal Project</option>
-          </select>
-        </div>
-
-        <button
-          type="submit"
-          disabled={isLoading}
-          className={`w-full py-2 px-4 text-white font-semibold rounded-md transition-colors ${
-            isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-          }`}
-          onClick={handleCreateCampaign}
+      {showForm && (
+        <form
+          onSubmit={handleCreateCampaign}
+          className="space-y-4 max-w-md mx-auto"
         >
-          {isLoading ? "Creating..." : "Create Campaign"}
-        </button>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Campaign Title:
+            </label>
+            <input
+              type="text"
+              placeholder="Enter a catchy title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Campaign Goal (ETH):
+            </label>
+            <input
+              type="number"
+              placeholder="Enter goal amount in ETH"
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Duration (seconds):
+            </label>
+            <input
+              type="number"
+              placeholder="Enter duration in seconds"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Campaign Description:
+            </label>
+            <textarea
+              placeholder="Describe the purpose of the campaign"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Category:
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+              required
+            >
+              <option value="">Select a category</option>
+              <option value="Charity">Charity</option>
+              <option value="Innovation">Innovation</option>
+              <option value="Personal Project">Personal Project</option>
+            </select>
+          </div>
 
-        {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-        {successMessage && (
-          <p className="text-green-500 mt-2">{successMessage}</p>
-        )}
-      </form>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={`w-full py-2 px-4 text-white font-semibold rounded-md transition-colors ${
+              isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+            }`}
+          >
+            {isLoading ? "Creating..." : "Create Campaign"}
+          </button>
 
-      {errorMessage && (
-        <p className="text-red-500 text-sm mt-4">{errorMessage}</p>
+          {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
+          {successMessage && (
+            <p className="text-green-500 mt-2">{successMessage}</p>
+          )}
+        </form>
       )}
 
-      {successMessage && (
-        <p className="text-green-500 text-sm mt-4">{successMessage}</p>
+      {/* Display list of created campaign titles */}
+      {titles.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xl font-bold">Created Campaigns:</h3>
+          <ul className="list-disc pl-5 mt-2 text-gray-700">
+            {titles.map((campaignTitle, index) => (
+              <li key={index}>{campaignTitle}</li>
+            ))}
+          </ul>
+        </div>
       )}
+
+      <ToastContainer />
     </div>
   );
 };
 
-export default CreateCampignForm;
+export default CreateCampaignForm;

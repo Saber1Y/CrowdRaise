@@ -2,7 +2,6 @@ import React from "react";
 import LOGO from "../../public/LOGO.png";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-
 const Navbar = () => {
   return (
     <nav className="absolute top-0 left-0 w-full flex justify-between items-center p-6 z-20 text-white">
@@ -12,7 +11,7 @@ const Navbar = () => {
           CrowdRaise
         </span>
       </div>
-      
+
       <ConnectButton />
       {/* <ul className="flex justify-center space-x-4 text-[18px] font-medium cursor-pointer">
         <li>Home</li>
