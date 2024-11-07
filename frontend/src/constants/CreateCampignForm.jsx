@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useWriteContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
 import { formatEther, parseEther } from "viem";
-
 import "react-toastify/dist/ReactToastify.css";
 
 const CreateCampaignForm = ({ contractAddress, abi }) => {
@@ -15,7 +14,16 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [titles, setTitles] = useState([]); // Initialize titles array
+  const [date, setDate] = useState("");
+  const [donation, setDonation] = useState("");
+
+  const [titles, setTitles] = useState([]);
+  const [descriptions, setDescriptions] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [durations, setDurations] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [dates, setDates] = useState([]);
+  const [donations, setDonations] = useState([]);
 
   const {
     writeContractAsync: createCampaign,
@@ -45,15 +53,23 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         position: "top-center",
       });
 
-      // Update titles array with new title
+      // Update state arrays with new data
       setTitles((prevTitles) => [...prevTitles, title]);
+      setDescriptions((prevDescriptions) => [...prevDescriptions, description]);
+      setCategories((prevCategories) => [...prevCategories, category]);
+      setDurations((prevDurations) => [...prevDurations, duration]);
+      setGoals((prevGoals) => [...prevGoals, goal]);
+      setDates((prevDates) => [...prevDates, date]);
+      setDonations((prevDonations) => [...prevDonations, donation]);
 
       // Clear form fields
-      // setGoal("");
-      // setTitle("");
-      // setDescription("");
-      // setCategory("");
-      // setDuration("");
+      setGoal("");
+      setTitle("");
+      setDescription("");
+      setCategory("");
+      setDuration("");
+      setDate("");
+      setDonation("");
     } catch (error) {
       console.error("Error creating campaign:", error);
       setErrorMessage(
@@ -126,6 +142,30 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
           </div>
           <div className="form-group">
             <label className="block text-gray-700 font-semibold mb-1">
+              Campaign Date:
+            </label>
+            <textarea
+              placeholder="Enter Date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
+              Campaign Donation:
+            </label>
+            <textarea
+              placeholder="Describe the donation"
+              value={donation}
+              onChange={(e) => setDonation(e.target.value)}
+              required
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+            />
+          </div>
+          <div className="form-group">
+            <label className="block text-gray-700 font-semibold mb-1">
               Campaign Description:
             </label>
             <textarea
@@ -170,16 +210,32 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         </form>
       )}
 
-      {/* Display list of created campaign titles */}
+      {/* Display list of created campaigns with details */}
       {titles.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-xl font-bold">Created Campaigns:</h3>
-          <ul className="list-disc pl-5 mt-2 text-gray-700">
-            {titles.map((campaignTitle, index) => (
-              <li key={index}>{campaignTitle}</li>
-            ))}
-          </ul>
-        </div>
+        <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
+          {titles.map((campaignTitle, index) => (
+            <div
+              className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
+              key={index}
+            >
+              <div className="p-5">
+                <div className="flex flex-row justify-between">
+                  <span>{dates[index]}</span>
+                  <span>{donations[index]}</span>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
+                    Title: {campaignTitle}
+                  </h5>
+                  <p>Description:</p> {descriptions[index]} <br />
+                  <strong>Category:</strong> {categories[index]} <br />
+                  <strong>Goal (ETH):</strong> {goals[index]} <br />
+                  <strong>Duration (seconds):</strong> {durations[index]}
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
       )}
 
       <ToastContainer />
