@@ -10,12 +10,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [duration, setDuration] = useState("");
+  const [date, setDate] = useState("");
+  const [donation, setDonation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
-  const [date, setDate] = useState("");
-  const [donation, setDonation] = useState("");
 
   const [titles, setTitles] = useState([]);
   const [descriptions, setDescriptions] = useState([]);
@@ -25,15 +25,13 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [dates, setDates] = useState([]);
   const [donations, setDonations] = useState([]);
 
-  const {
-    writeContractAsync: createCampaign,
-    error: createError,
-    isLoading: isCreating,
-  } = useWriteContract();
+  const { writeContractAsync: createCampaign } = useWriteContract({
+    address: contractAddress,
+    abi,
+    functionName: "createCampaign",
+  });
 
-  const handleShowForm = () => {
-    setShowForm(true);
-  };
+  const handleShowForm = () => setShowForm(true);
 
   const handleCreateCampaign = async (e) => {
     e.preventDefault();
@@ -72,24 +70,22 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       setDonation("");
     } catch (error) {
       console.error("Error creating campaign:", error);
-      setErrorMessage(
-        `Failed to create campaign: ${error.message || "unknown error"}`
-      );
-      toast.error(
-        `Failed to create campaign: ${error.message || "unknown error"}`
-      );
+      setErrorMessage(`
+        Failed to create campaign: ${error.message || "unknown error"}`);
+      toast.error(`
+        Failed to create campaign: ${error.message || "unknown error"}`);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-md">
+    <div className="bg-white">
       <h2 className="text-2xl font-bold mb-6 text-center">
         {!showForm && (
           <button
             onClick={handleShowForm}
-            className="create-campaign-button bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded my-4"
           >
             Create a New Campaign
           </button>
@@ -97,141 +93,105 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       </h2>
 
       {showForm && (
-        <form
-          onSubmit={handleCreateCampaign}
-          className="space-y-4 max-w-md mx-auto"
-        >
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Campaign Title:
-            </label>
-            <input
-              type="text"
-              placeholder="Enter a catchy title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            />
-          </div>
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Campaign Goal (ETH):
-            </label>
-            <input
-              type="number"
-              placeholder="Enter goal amount in ETH"
-              value={goal}
-              onChange={(e) => setGoal(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            />
-          </div>
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Duration (seconds):
-            </label>
-            <input
-              type="number"
-              placeholder="Enter duration in seconds"
-              value={duration}
-              onChange={(e) => setDuration(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            />
-          </div>
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Campaign Date:
-            </label>
-            <textarea
-              placeholder="Enter Date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            />
-          </div>
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Campaign Donation:
-            </label>
-            <textarea
-              placeholder="Describe the donation"
-              value={donation}
-              onChange={(e) => setDonation(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            />
-          </div>
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Campaign Description:
-            </label>
-            <textarea
-              placeholder="Describe the purpose of the campaign"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-            />
-          </div>
-          <div className="form-group">
-            <label className="block text-gray-700 font-semibold mb-1">
-              Category:
-            </label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
-              required
-            >
-              <option value="">Select a category</option>
-              <option value="Charity">Charity</option>
-              <option value="Innovation">Innovation</option>
-              <option value="Personal Project">Personal Project</option>
-            </select>
-          </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full mx-auto p-6 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Create New Campaign
+              </h3>
+              <button
+                onClick={() => setShowForm(false)}
+                className="text-gray-500 hover:bg-gray-200 rounded-full p-2"
+              >
+                <svg
+                  className="w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full py-2 px-4 text-white font-semibold rounded-md transition-colors ${
-              isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            {isLoading ? "Creating..." : "Create Campaign"}
-          </button>
-
-          {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>}
-          {successMessage && (
-            <p className="text-green-500 mt-2">{successMessage}</p>
-          )}
-        </form>
+            <form onSubmit={handleCreateCampaign} className="space-y-4">
+              <input
+                type="text"
+                placeholder="Campaign Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md text-black"
+              />
+              <input
+                type="number"
+                placeholder="Goal in ETH"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md text-black"
+              />
+              <input
+                type="number"
+                placeholder="Duration in seconds"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md text-black"
+              />
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md text-black"
+              />
+              <textarea
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md text-black"
+              />
+              <button
+                type="submit"
+                disabled={isLoading}
+                className={`w-full py-2 font-semibold rounded-md ${
+                  isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+                }`}
+              >
+                {isLoading ? "Creating..." : "Create Campaign"}
+              </button>
+              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+              {successMessage && (
+                <p className="text-green-500">{successMessage}</p>
+              )}
+            </form>
+          </div>
+        </div>
       )}
 
-      {/* Display list of created campaigns with details */}
       {titles.length > 0 && (
-        <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-3 my-3">
           {titles.map((campaignTitle, index) => (
             <div
-              className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
+              className="w-[330px] bg-white border rounded-lg shadow"
               key={index}
             >
               <div className="p-5">
-                <div className="flex flex-row justify-between">
-                  <span>{dates[index]}</span>
-                  <span>{donations[index]}</span>
-                </div>
-                <div className="flex flex-col space-y-2">
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
-                    Title: {campaignTitle}
-                  </h5>
-                  <p>Description:</p> {descriptions[index]} <br />
-                  <strong>Category:</strong> {categories[index]} <br />
-                  <strong>Goal (ETH):</strong> {goals[index]} <br />
-                  <strong>Duration (seconds):</strong> {durations[index]}
-                </div>
+                <h5 className="mb-2 text-2xl font-bold">{campaignTitle}</h5>
+                <p>Description: {descriptions[index]}</p>
+                <p>Goal: {goals[index]} ETH</p>
+                <p>Duration: {durations[index]} seconds</p>
+                <button className="w-full py-2 border text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-5">
+                  Donate now
+                </button>
               </div>
             </div>
           ))}
