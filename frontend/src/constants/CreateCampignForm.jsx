@@ -31,7 +31,25 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     functionName: "createCampaign",
   });
 
+  const { writeContractAsync: donateCampaign } = useWriteContract({
+    address: contractAddress,
+    abi,
+    functionName: "contribute",
+  });
+
   const handleShowForm = () => setShowForm(true);
+
+  const handleDonateCampaign = async (e) => {
+    e.preventDefault();
+
+    try {
+      const data = await donateCreate({
+        address: contractAddress,
+        abi: abi,
+        functionName: "donateCampaign",
+      });
+    } catch (error) {}
+  };
 
   const handleCreateCampaign = async (e) => {
     e.preventDefault();
@@ -178,18 +196,31 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       )}
 
       {titles.length > 0 && (
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-3 my-3">
+        <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
           {titles.map((campaignTitle, index) => (
             <div
-              className="w-[330px] bg-white border rounded-lg shadow"
+              className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
               key={index}
             >
               <div className="p-5">
-                <h5 className="mb-2 text-2xl font-bold">{campaignTitle}</h5>
-                <p>Description: {descriptions[index]}</p>
-                <p>Goal: {goals[index]} ETH</p>
-                <p>Duration: {durations[index]} seconds</p>
-                <button className="w-full py-2 border text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-5">
+                <div className="flex flex-row justify-between">
+                  <span>{dates[index]}</span>
+                  <span>{donations[index]}</span>
+                </div>
+                <div className="flex flex-col space-y-2">
+                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
+                    {campaignTitle}
+                  </h5>
+                  <p>Description: {descriptions[index]}</p> <br />
+                  <div className="flex flex-row justify-between">
+                    <p> {goals[index]} (ETH)</p>
+                    <p>{durations[index]} (seconds)</p>
+                  </div>
+                </div>
+                <button
+                  href="#"
+                  className="w-full items-center px-3 py-2 text-sm font-medium  border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-5"
+                >
                   Donate now
                 </button>
               </div>
