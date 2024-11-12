@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useWriteContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
-import { formatEther, parseEther } from "viem";
+import { parseEther } from "viem";
 import "react-toastify/dist/ReactToastify.css";
 
 const CreateCampaignForm = ({ contractAddress, abi }) => {
@@ -11,7 +11,6 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [category, setCategory] = useState("");
   const [duration, setDuration] = useState("");
   const [date, setDate] = useState("");
-  const [donation, setDonation] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -23,32 +22,40 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [durations, setDurations] = useState([]);
   const [goals, setGoals] = useState([]);
   const [dates, setDates] = useState([]);
-  const [donations, setDonations] = useState([]);
+  const [donationAmounts, setDonationAmounts] = useState([]);
 
   const { writeContractAsync: createCampaign } = useWriteContract({
     address: contractAddress,
-    abi,
+    abi: abi,
     functionName: "createCampaign",
   });
 
-  const { writeContractAsync: donateCampaign } = useWriteContract({
+  const { writeContractAsync: contribute } = useWriteContract({
     address: contractAddress,
-    abi,
+    abi: abi,
     functionName: "contribute",
   });
 
   const handleShowForm = () => setShowForm(true);
 
-  const handleDonateCampaign = async (e) => {
-    e.preventDefault();
+  const handleDonateCampaign = async (index) => {
+    const amount = donationAmounts[index];
+    if (!amount) {
+      toast.error("Please enter a donation amount.");
+      return;
+    }
 
     try {
-      const data = await donateCreate({
+      await contribute({
         address: contractAddress,
         abi: abi,
-        functionName: "donateCampaign",
+        functionName: "contribute",
       });
-    } catch (error) {}
+      toast.success("Donation successful!", { position: "top-center" });
+    } catch (error) {
+      console.error("Donation failed:", error);
+      toast.error("Donation failed.");
+    }
   };
 
   const handleCreateCampaign = async (e) => {
@@ -56,7 +63,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     setIsLoading(true);
 
     try {
-      const data = await createCampaign({
+      await createCampaign({
         address: contractAddress,
         abi: abi,
         functionName: "createCampaign",
@@ -69,29 +76,28 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         position: "top-center",
       });
 
-      // Update state arrays with new data
-      setTitles((prevTitles) => [...prevTitles, title]);
-      setDescriptions((prevDescriptions) => [...prevDescriptions, description]);
-      setCategories((prevCategories) => [...prevCategories, category]);
-      setDurations((prevDurations) => [...prevDurations, duration]);
-      setGoals((prevGoals) => [...prevGoals, goal]);
-      setDates((prevDates) => [...prevDates, date]);
-      setDonations((prevDonations) => [...prevDonations, donation]);
+      setTitles((prev) => [...prev, title]);
+      setDescriptions((prev) => [...prev, description]);
+      setCategories((prev) => [...prev, category]);
+      setDurations((prev) => [...prev, duration]);
+      setGoals((prev) => [...prev, goal]);
+      setDates((prev) => [...prev, date]);
+      setDonationAmounts((prev) => [...prev, ""]);
 
-      // Clear form fields
       setGoal("");
       setTitle("");
       setDescription("");
       setCategory("");
       setDuration("");
       setDate("");
-      setDonation("");
     } catch (error) {
       console.error("Error creating campaign:", error);
-      setErrorMessage(`
-        Failed to create campaign: ${error.message || "unknown error"}`);
-      toast.error(`
-        Failed to create campaign: ${error.message || "unknown error"}`);
+      setErrorMessage(
+        `Failed to create campaign: ${error.message || "unknown error"}`
+      );
+      toast.error(
+        `Failed to create campaign: ${error.message || "unknown error"}`
+      );
     } finally {
       setIsLoading(false);
     }
@@ -137,59 +143,62 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                 </svg>
               </button>
             </div>
-
-            <form onSubmit={handleCreateCampaign} className="space-y-4">
+            4
+            <form onSubmit={handleCreateCampaign}>
               <input
                 type="text"
-                placeholder="Campaign Title"
+                placeholder="Title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                className="w-full px-3 py-2 border rounded-md text-black"
-              />
-              <input
-                type="number"
-                placeholder="Goal in ETH"
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-md text-black"
-              />
-              <input
-                type="number"
-                placeholder="Duration in seconds"
-                value={duration}
-                onChange={(e) => setDuration(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-md text-black"
-              />
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-md text-black"
+                className="w-full px-3 py-2 border rounded-md"
               />
               <textarea
                 placeholder="Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 required
-                className="w-full px-3 py-2 border rounded-md text-black"
+                className="w-full px-3 py-2 border rounded-md mt-3"
+              />
+              <input
+                type="text"
+                placeholder="Category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md mt-3"
+              />
+              <input
+                type="text"
+                placeholder="Goal (ETH)"
+                value={goal}
+                onChange={(e) => setGoal(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md mt-3"
+              />
+              <input
+                type="number"
+                placeholder="Duration (days)"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md mt-3"
+              />
+              <input
+                type="date"
+                placeholder="Start Date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+                className="w-full px-3 py-2 border rounded-md mt-3"
               />
               <button
                 type="submit"
+                className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded mt-4"
                 disabled={isLoading}
-                className={`w-full py-2 font-semibold rounded-md ${
-                  isLoading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
-                }`}
               >
                 {isLoading ? "Creating..." : "Create Campaign"}
               </button>
-              {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-              {successMessage && (
-                <p className="text-green-500">{successMessage}</p>
-              )}
             </form>
           </div>
         </div>
@@ -205,21 +214,26 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
               <div className="p-5">
                 <div className="flex flex-row justify-between">
                   <span>{dates[index]}</span>
-                  <span>{donations[index]}</span>
+                  <span>{goals[index]} ETH</span>
                 </div>
-                <div className="flex flex-col space-y-2">
-                  <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
-                    {campaignTitle}
-                  </h5>
-                  <p>Description: {descriptions[index]}</p> <br />
-                  <div className="flex flex-row justify-between">
-                    <p> {goals[index]} (ETH)</p>
-                    <p>{durations[index]} (seconds)</p>
-                  </div>
-                </div>
+                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
+                  {campaignTitle}
+                </h5>
+                <p>{descriptions[index]}</p>
+                <input
+                  type="number"
+                  placeholder="Donation Amount (ETH)"
+                  value={donationAmounts[index]}
+                  onChange={(e) =>
+                    setDonationAmounts((prev) =>
+                      prev.map((amt, i) => (i === index ? e.target.value : amt))
+                    )
+                  }
+                  className="w-full px-3 py-2 border rounded-md text-black mt-3"
+                />
                 <button
-                  href="#"
-                  className="w-full items-center px-3 py-2 text-sm font-medium  border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-5"
+                  onClick={() => handleDonateCampaign(index)}
+                  className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
                 >
                   Donate now
                 </button>
