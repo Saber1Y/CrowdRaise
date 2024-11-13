@@ -14,9 +14,17 @@ error CampaignIsCanceled();
 error NotEnoughFundsForCampaign();
 
 contract CrowdFunding {
-    event ContributionMade(uint256 indexed campaignId, address indexed contributor, uint256 amount);
+    event ContributionMade(
+        uint256 indexed campaignId,
+        address indexed contributor,
+        uint256 amount
+    );
     event CampaignCanceled(uint256 indexed campaignId);
-    event FundsWithdrawn(uint256 indexed campaignId, address owner, uint256 amount);
+    event FundsWithdrawn(
+        uint256 indexed campaignId,
+        address owner,
+        uint256 amount
+    );
 
     struct Campaign {
         address payable owner;
@@ -34,7 +42,10 @@ contract CrowdFunding {
 
     modifier isCampaignActive(uint256 _id) {
         Campaign storage campaign = campaigns[_id];
-        if (block.timestamp > campaign.deadline || campaign.amountRaised >= campaign.goal) {
+        if (
+            block.timestamp > campaign.deadline ||
+            campaign.amountRaised >= campaign.goal
+        ) {
             revert ThisCampaignIsClosed();
         }
         _;
@@ -73,7 +84,9 @@ contract CrowdFunding {
     }
 
     // Contribute to a campaign by sending ETH
-    function contribute(uint256 _id) public payable isCampaignActive(_id) isNotCanceled(_id) {
+    function contribute(
+        uint256 _id
+    ) public payable isCampaignActive(_id) isNotCanceled(_id) {
         Campaign storage campaign = campaigns[_id];
 
         require(msg.value > 0, "Contribution must be greater than zero");
@@ -130,5 +143,12 @@ contract CrowdFunding {
     // Get the contribution amount for a given campaign ID and contributor
     function getContribution(uint256 _id) public view returns (uint256) {
         return contributions[_id][msg.sender];
+    }
+
+    function getProgress(uint256 _id) public view returns (uint256) {
+        Campaign storage campaign = campaigns[_id];
+
+        if (campign.goal == 0) return 0;
+        return (campaign.amountRaised * 100) / campaign.goal;
     }
 }
