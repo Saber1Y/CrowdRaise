@@ -15,6 +15,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [showDonateInput, setShowDonateInput] = useState(null); // Track which campaign's donate input is shown
 
   const [titles, setTitles] = useState([]);
   const [descriptions, setDescriptions] = useState([]);
@@ -50,8 +51,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         address: contractAddress,
         abi: abi,
         functionName: "contribute",
+        args: [parseEther(amount)],
       });
       toast.success("Donation successful!", { position: "top-center" });
+      setDonationAmounts((prev) =>
+        prev.map((amt, i) => (i === index ? "" : amt))
+      );
     } catch (error) {
       console.error("Donation failed:", error);
       toast.error("Donation failed.");
@@ -143,8 +148,9 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                 </svg>
               </button>
             </div>
-            4
+
             <form onSubmit={handleCreateCampaign}>
+              {/* Campaign creation fields */}
               <input
                 type="text"
                 placeholder="Title"
@@ -220,23 +226,37 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                   {campaignTitle}
                 </h5>
                 <p>{descriptions[index]}</p>
-                <input
-                  type="number"
-                  placeholder="Donation Amount (ETH)"
-                  value={donationAmounts[index]}
-                  onChange={(e) =>
-                    setDonationAmounts((prev) =>
-                      prev.map((amt, i) => (i === index ? e.target.value : amt))
-                    )
-                  }
-                  className="w-full px-3 py-2 border rounded-md text-black mt-3"
-                />
+
                 <button
-                  onClick={() => handleDonateCampaign(index)}
+                  onClick={() => setShowDonateInput(index)}
                   className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
                 >
                   Donate now
                 </button>
+
+                {showDonateInput === index && (
+                  <div className="mt-3">
+                    <input
+                      type="number"
+                      placeholder="Donation Amount (ETH)"
+                      value={donationAmounts[index] || ""}
+                      onChange={(e) =>
+                        setDonationAmounts((prev) =>
+                          prev.map((amt, i) =>
+                            i === index ? e.target.value : amt
+                          )
+                        )
+                      }
+                      className="w-full px-3 py-2 border rounded-md text-black"
+                    />
+                    <button
+                      onClick={() => handleDonateCampaign(index)}
+                      className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-2"
+                    >
+                      Confirm Donation
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ))}
