@@ -38,9 +38,9 @@ const Distribute = () => {
       <div className="flex flex-col md:flex-row justify-around items-center">
         <div className="flex flex-col" data-aos="fade-left">
           <h2 className="my-10 ml-14">
-            <p className="text-[16px]">MODERN CROWDFUNDING PLATFORM</p>
+            <p className="text-[16px] p-3">MODERN CROWDFUNDING PLATFORM</p>
 
-            <p className="text-[28px] md:text-[32px] font-bold leading-tight">
+            <p className="text-[23px] p-3 md:text-[32px] font-bold leading-tight">
               {" "}
               Distribute aid <span className="text-[#13ADB7]">
                 easily

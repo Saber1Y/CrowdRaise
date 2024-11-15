@@ -36,9 +36,6 @@ const Hero = () => {
           <button className="px-10 py-3  text-[15px] md:text-[18px] text-white border border-white rounded-full">
             Watch now
           </button>
-          <button className="px-10 py-3  text-[15px] md:text-[18px] text-white border border-white rounded-full">
-            Watch now
-          </button>
         </div>
       </div>
     </section>

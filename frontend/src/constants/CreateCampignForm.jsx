@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useWriteContract } from "wagmi";
+import React, { useState, useEffect } from "react";
+import { useWriteContract, useReadContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
 import { parseEther } from "viem";
 import "react-toastify/dist/ReactToastify.css";
@@ -25,6 +25,9 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [dates, setDates] = useState([]);
   const [donationAmounts, setDonationAmounts] = useState([]);
 
+  const [progress, setProgress] = useState(0);
+  const [campaignIds, setCampaignIds] = useState([]);
+
   const { writeContractAsync: createCampaign } = useWriteContract({
     address: contractAddress,
     abi: abi,
@@ -37,7 +40,36 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     functionName: "contribute",
   });
 
+  const { readContractAsync: getProgress } = useReadContract({
+    address: contractAddress,
+    abi: abi,
+    functionName: "getProgress",
+  });
+
   const handleShowForm = () => setShowForm(true);
+
+  const fetchProgress = async (campaignId, index) => {
+    try {
+      const result = await getProgress({ args: [campaignIds] });
+      setProgress((prev) =>
+        prev.map((val, idx) => (idx === index ? result : val))
+      );
+    } catch (error) {
+      console.error(
+        `Failed to fetch progress for campaign ${campaignId}:`,
+        error
+      );
+      toast.error(`Failed to fetch progress for campaign ${campaignId}`);
+    }
+  };
+
+  useEffect(() => {
+    if (campaignIds.length > 0) {
+      campaignIds.forEach((campaignId, index) => {
+        fetchProgress(campaignId, index);
+      });
+    }
+  }, [campaignIds]);
 
   const handleDonateCampaign = async (index) => {
     const amount = donationAmounts[index];
@@ -168,14 +200,6 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
               />
               <input
                 type="text"
-                placeholder="Category"
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                required
-                className="w-full px-3 py-2 border rounded-md mt-3"
-              />
-              <input
-                type="text"
                 placeholder="Goal (ETH)"
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}
@@ -233,6 +257,21 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                 >
                   Donate now
                 </button>
+
+                <div
+                  key={index}
+                  className="p-5 bg-white shadow-md rounded-md border border-gray-200"
+                >
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
+                    <div
+                      className="bg-blue-600 h-2.5 rounded-full"
+                      style={{ width: `${progress[index] || 0}%` }}
+                    ></div>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Progress: {progress[index] || 0}%
+                  </p>
+                </div>
 
                 {showDonateInput === index && (
                   <div className="mt-3">
