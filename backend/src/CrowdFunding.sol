@@ -37,6 +37,7 @@ contract CrowdFunding {
     mapping(uint256 => Campaign) public campaigns; // Mapping campaign ID to campaign details
     mapping(uint256 => bool) public isCanceled; // Track canceled campaigns
     mapping(uint256 => mapping(address => uint256)) public contributions; // Track individual contributions
+    mapping(address => uint256[]) public userCampigns;
 
     uint256 public campaignCount;
 
@@ -68,6 +69,8 @@ contract CrowdFunding {
             deadline: block.timestamp + _duration,
             isFunded: false
         });
+
+        userCampaigns[msg.sender].push(campaignCount);
     }
 
     // Cancel a campaign
@@ -150,5 +153,11 @@ contract CrowdFunding {
 
         if (campign.goal == 0) return 0;
         return (campaign.amountRaised * 100) / campaign.goal;
+    }
+
+    function getUserCampaigns(
+        address user
+    ) public view returns (uint256[] memory) {
+        return userCampaigns[user];
     }
 }
