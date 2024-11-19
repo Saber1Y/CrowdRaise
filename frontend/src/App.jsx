@@ -29,9 +29,8 @@ function App() {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
           <Router>
-            <Navbar /> {/* Add Navbar */}
+            <Navbar />
             <Routes>
-              {/* Define routes */}
               <Route
                 path="/"
                 element={
@@ -49,7 +48,17 @@ function App() {
                   </>
                 }
               />
-              <Route path="/mycampaign" element={<Mycampaign />} />
+              <Route
+                path="/mycampaign"
+                element={
+                  <div className="flex flex-col">
+                    <Mycampaign />
+                    <Distribute />
+                    <GroupImg />
+                    <Footer />
+                  </div>
+                }
+              />
             </Routes>
           </Router>
         </RainbowKitProvider>
