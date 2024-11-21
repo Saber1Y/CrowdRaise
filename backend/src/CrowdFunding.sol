@@ -37,7 +37,7 @@ contract CrowdFunding {
     mapping(uint256 => Campaign) public campaigns; // Mapping campaign ID to campaign details
     mapping(uint256 => bool) public isCanceled; // Track canceled campaigns
     mapping(uint256 => mapping(address => uint256)) public contributions; // Track individual contributions
-    mapping(address => uint256[]) public userCampigns;
+    mapping(address => uint256[]) public userCampaigns;
 
     uint256 public campaignCount;
 
@@ -151,7 +151,7 @@ contract CrowdFunding {
     function getProgress(uint256 _id) public view returns (uint256) {
         Campaign storage campaign = campaigns[_id];
 
-        if (campign.goal == 0) return 0;
+        if (campaign.goal == 0) return 0;
         return (campaign.amountRaised * 100) / campaign.goal;
     }
 

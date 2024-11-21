@@ -33,8 +33,9 @@ const Distribute = () => {
       answer: "Test",
     },
   ];
+
   return (
-    <section className="mt-10">
+    <section className="mt-10 max-w-screen-xl">
       <div className="flex flex-col md:flex-row justify-around items-center">
         <div className="flex flex-col" data-aos="fade-left">
           <h2 className="my-10 ml-14">
