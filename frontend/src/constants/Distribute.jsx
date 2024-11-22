@@ -35,9 +35,9 @@ const Distribute = () => {
   ];
 
   return (
-    <section className="mt-10 max-w-screen-xl">
+    <section className="mt-10 max-w-screen-2xl">
       <div className="flex flex-col md:flex-row justify-around items-center">
-        <div className="flex flex-col" data-aos="fade-left">
+        <div className="flex flex-col p-4" data-aos="fade-left">
           <h2 className="my-10 ml-14">
             <p className="text-[16px] p-3">MODERN CROWDFUNDING PLATFORM</p>
 
@@ -53,7 +53,7 @@ const Distribute = () => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
-            width={497}
+            width={300}
             height={742}
             fill="none"
             className="cursor-pointer"
@@ -348,7 +348,7 @@ const Distribute = () => {
         </div>
 
         <div className="flex flex-col text-[18px]" data-aos="fade-right">
-          <div className="w-full h-auto py-10 bg-white">
+          <div className="w-full p-4 h-auto py-10 bg-white">
             <div className="flex flex-col text-[18px]">
               <p>
                 Open Data is the idea that some data should be freely
