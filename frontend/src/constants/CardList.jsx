@@ -3,7 +3,7 @@ import React from "react";
 const CardList = () => {
   return (
     <section
-      className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center sapce-x-3 space-y-3 my-3 md:space-y-5"     
+      className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center sapce-x-4 space-y-3 my-3 md:space-y-5"     
     >
       <div className="w-[330px] bg-white border border-gray-200 rounded-lg shadow " data-aos="fade-left">
        
