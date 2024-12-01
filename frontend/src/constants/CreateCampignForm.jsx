@@ -26,7 +26,9 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [donationAmounts, setDonationAmounts] = useState([]);
 
   const [progress, setProgress] = useState(0);
-  const [campaignIds, setCampaignIds] = useState([]);
+  // const [campaignIds, setCampaignIds] = useState([]);
+
+  const [campaigns, setCampaigns] = useState([]);
 
   const { writeContractAsync: createCampaign } = useWriteContract({
     address: contractAddress,
@@ -48,28 +50,48 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
 
   const handleShowForm = () => setShowForm(true);
 
-  const fetchProgress = async (campaignId, index) => {
-    try {
-      const result = await getProgress({ args: [campaignIds] });
-      setProgress((prev) =>
-        prev.map((val, idx) => (idx === index ? result : val))
-      );
-    } catch (error) {
-      console.error(
-        `Failed to fetch progress for campaign ${campaignId}:`,
-        error
-      );
-      toast.error(`Failed to fetch progress for campaign ${campaignId}`);
-    }
-  };
+  // const fetchProgress = async (campaignId, index) => {
+  //   try {
+  //     const result = await getProgress({ args: [campaignIds] });
+  //     setProgress((prev) =>
+  //       prev.map((val, idx) => (idx === index ? result : val))
+  //     );
+  //   } catch (error) {
+  //     console.error(
+  //       `Failed to fetch progress for campaign ${campaignId}:`,
+  //       error
+  //     );
+  //     toast.error(`Failed to fetch progress for campaign ${campaignId}`);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   if (campaignIds.length > 0) {
+  //     campaignIds.forEach((campaignId, index) => {
+  //       fetchProgress(campaignId, index);
+  //     });
+  //   }
+  // }, [campaignIds]);
 
   useEffect(() => {
-    if (campaignIds.length > 0) {
-      campaignIds.forEach((campaignId, index) => {
-        fetchProgress(campaignId, index);
-      });
+    const storedCampaigns = localStorage.getItem("campaigns");
+    if (storedCampaigns) {
+      const parsedCampaigns = JSON.parse(storedCampaigns);
+      setCampaigns(parsedCampaigns);
+      setDonationAmounts(new Array(parsedCampaigns.length).fill("")); // Ensure this matches campaigns count
     }
-  }, [campaignIds]);
+  }, []);
+
+  useEffect(() => {
+    if (campaigns.length > 0) {
+      saveCampaignsToLocalStorage(campaigns);
+    }
+  }, [campaigns]);
+
+  const saveCampaignsToLocalStorage = (campaigns) => {
+    console.log("saving campaign", campaigns);
+    localStorage.setItem("campaigns", JSON.stringify(campaigns));
+  }; //save to localStorage
 
   const handleDonateCampaign = async (index) => {
     const amount = donationAmounts[index];
@@ -107,6 +129,19 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         args: [parseEther(goal), parseInt(duration, 10)],
         overrides: { gasLimit: 1000000 },
       });
+
+      const newCampaign = {
+        title,
+        description,
+        goal,
+        duration,
+        date,
+        category,
+      };
+
+      const updatedCampaigns = [...campaigns, newCampaign];
+      setCampaigns(updatedCampaigns);
+      saveCampaignsToLocalStorage(updatedCampaigns);
 
       setSuccessMessage("Campaign created successfully!");
       toast.success("Campaign created successfully", {
