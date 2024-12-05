@@ -74,48 +74,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   // }, [campaignIds]);
 
   useEffect(() => {
-    const storedCampaigns = localStorage.getItem("campaigns");
-    if (storedCampaigns) {
-      const parsedCampaigns = JSON.parse(storedCampaigns);
-      setCampaigns(parsedCampaigns);
-      setDonationAmounts(new Array(parsedCampaigns.length).fill("")); // Ensure this matches campaigns count
+    // Load campaigns from local storage when the component mounts
+    const savedCampaigns = localStorage.getItem("campaigns");
+    if (savedCampaigns) {
+      setCampaigns(JSON.parse(savedCampaigns));
     }
   }, []);
-
-  useEffect(() => {
-    if (campaigns.length > 0) {
-      saveCampaignsToLocalStorage(campaigns);
-    }
-  }, [campaigns]);
-
-  const saveCampaignsToLocalStorage = (campaigns) => {
-    console.log("saving campaign", campaigns);
-    localStorage.setItem("campaigns", JSON.stringify(campaigns));
-  }; //save to localStorage
-
-  const handleDonateCampaign = async (index) => {
-    const amount = donationAmounts[index];
-    if (!amount) {
-      toast.error("Please enter a donation amount.");
-      return;
-    }
-
-    try {
-      await contribute({
-        address: contractAddress,
-        abi: abi,
-        functionName: "contribute",
-        args: [parseEther(amount)],
-      });
-      toast.success("Donation successful!", { position: "top-center" });
-      setDonationAmounts((prev) =>
-        prev.map((amt, i) => (i === index ? "" : amt))
-      );
-    } catch (error) {
-      console.error("Donation failed:", error);
-      toast.error("Donation failed.");
-    }
-  };
 
   const handleCreateCampaign = async (e) => {
     e.preventDefault();
@@ -132,16 +96,18 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
 
       const newCampaign = {
         title,
-        description,
         goal,
+        description,
+        category,
         duration,
         date,
-        category,
+        progress: 0,
       };
 
+      // Update the state and localStorage
       const updatedCampaigns = [...campaigns, newCampaign];
       setCampaigns(updatedCampaigns);
-      saveCampaignsToLocalStorage(updatedCampaigns);
+      localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
 
       setSuccessMessage("Campaign created successfully!");
       toast.success("Campaign created successfully", {
@@ -172,6 +138,30 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDonateCampaign = async (index) => {
+    const amount = donationAmounts[index];
+    if (!amount) {
+      toast.error("Please enter a donation amount.");
+      return;
+    }
+
+    try {
+      await contribute({
+        address: contractAddress,
+        abi: abi,
+        functionName: "contribute",
+        args: [parseEther(amount)],
+      });
+      toast.success("Donation successful!", { position: "top-center" });
+      setDonationAmounts((prev) =>
+        prev.map((amt, i) => (i === index ? "" : amt))
+      );
+    } catch (error) {
+      console.error("Donation failed:", error);
+      toast.error("Donation failed.");
     }
   };
 
