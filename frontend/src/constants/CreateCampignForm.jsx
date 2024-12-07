@@ -94,20 +94,20 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         overrides: { gasLimit: 1000000 },
       });
 
-      const newCampaign = {
-        title,
-        goal,
-        description,
-        category,
-        duration,
-        date,
-        progress: 0,
-      };
+      // const newCampaign = {
+      //   title,
+      //   goal,
+      //   description,
+      //   category,
+      //   duration,
+      //   date,
+      //   progress: 0,
+      // };
 
-      // Update the state and localStorage
-      const updatedCampaigns = [...campaigns, newCampaign];
-      setCampaigns(updatedCampaigns);
-      localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
+      // // Update the state and localStorage
+      // const updatedCampaigns = [...campaigns, newCampaign];
+      // setCampaigns(updatedCampaigns);
+      // localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
 
       setSuccessMessage("Campaign created successfully!");
       toast.success("Campaign created successfully", {
@@ -139,6 +139,21 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     } finally {
       setIsLoading(false);
     }
+
+    const newCampaign = {
+      title,
+      goal,
+      description,
+      category,
+      duration,
+      date,
+      progress: 0,
+    };
+
+    // Update the state and localStorage
+    const updatedCampaigns = [...campaigns, newCampaign];
+    setCampaigns(updatedCampaigns);
+    localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
   };
 
   const handleDonateCampaign = async (index) => {
