@@ -36,6 +36,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     functionName: "createCampaign",
   });
 
+  const { writeContractAsync: cancelCampaign} = useWriteContract({
+    address: contractAddress,
+    abi: abi,
+    functionName: "deleteCampaign",
+  })
+
   const { writeContractAsync: contribute } = useWriteContract({
     address: contractAddress,
     abi: abi,
@@ -274,73 +280,71 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         </div>
       )}
 
-      {titles.length > 0 && (
-        <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
-          {titles.map((campaignTitle, index) => (
-            <div
-              className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
-              key={index}
-            >
-              <div className="p-5">
-                <div className="flex flex-row justify-between">
-                  <span>{dates[index]}</span>
-                  <span>{goals[index]} ETH</span>
-                </div>
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
-                  {campaignTitle}
-                </h5>
-                <p>{descriptions[index]}</p>
-
-                <button
-                  onClick={() => setShowDonateInput(index)}
-                  className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
-                >
-                  Donate now
-                </button>
-
-                <div
-                  key={index}
-                  className="p-5 bg-white shadow-md rounded-md border border-gray-200"
-                >
-                  <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
-                    <div
-                      className="bg-blue-600 h-2.5 rounded-full"
-                      style={{ width: `${progress[index] || 0}%` }}
-                    ></div>
-                  </div>
-                  <p className="mt-2 text-sm text-gray-600">
-                    Progress: {progress[index] || 0}%
-                  </p>
-                </div>
-
-                {showDonateInput === index && (
-                  <div className="mt-3">
-                    <input
-                      type="number"
-                      placeholder="Donation Amount (ETH)"
-                      value={donationAmounts[index] || ""}
-                      onChange={(e) =>
-                        setDonationAmounts((prev) =>
-                          prev.map((amt, i) =>
-                            i === index ? e.target.value : amt
-                          )
-                        )
-                      }
-                      className="w-full px-3 py-2 border rounded-md text-black"
-                    />
-                    <button
-                      onClick={() => handleDonateCampaign(index)}
-                      className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-2"
-                    >
-                      Confirm Donation
-                    </button>
-                  </div>
-                )}
+      <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
+        {campaigns.map((campaign1, index) => (
+          <div
+            className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
+            key={index}
+          >
+            <div className="p-5">
+              <div className="flex flex-row justify-between">
+                <span>{campaign1.date}</span>
+                <span>{campaign1.goal} ETH</span>
               </div>
+              <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
+                {campaign1.title}
+              </h5>
+              <p>{campaign1.descriptions}</p>
+
+              <button
+                onClick={() => setShowDonateInput(index)}
+                className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
+              >
+                Donate now
+              </button>
+
+              <div
+                key={index}
+                className="p-5 bg-white shadow-md rounded-md border border-gray-200"
+              >
+                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
+                  <div
+                    className="bg-blue-600 h-2.5 rounded-full"
+                    style={{ width: `${progress[index] || 0}%` }}
+                  ></div>
+                </div>
+                <p className="mt-2 text-sm text-gray-600">
+                  Progress: {progress[index] || 0}%
+                </p>
+              </div>
+
+              {showDonateInput === index && (
+                <div className="mt-3">
+                  <input
+                    type="number"
+                    placeholder="Donation Amount (ETH)"
+                    value={donationAmounts[index] || ""}
+                    onChange={(e) =>
+                      setDonationAmounts((prev) =>
+                        prev.map((amt, i) =>
+                          i === index ? e.target.value : amt
+                        )
+                      )
+                    }
+                    className="w-full px-3 py-2 border rounded-md text-black"
+                  />
+                  <button
+                    onClick={() => handleDonateCampaign(index)}
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-2"
+                  >
+                    Confirm Donation
+                  </button>
+                </div>
+              )}
             </div>
-          ))}
-        </section>
-      )}
+          </div>
+        ))}
+      </section>
 
       <ToastContainer />
     </div>
