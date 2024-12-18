@@ -3,6 +3,7 @@ import { useWriteContract, useReadContract } from "wagmi";
 import { ToastContainer, toast } from "react-toastify";
 import { parseEther } from "viem";
 import "react-toastify/dist/ReactToastify.css";
+import { IoMdClose } from "react-icons/io";
 
 const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [goal, setGoal] = useState("");
@@ -36,11 +37,11 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     functionName: "createCampaign",
   });
 
-  const { writeContractAsync: cancelCampaign} = useWriteContract({
+  const { writeContractAsync: cancelCampaign } = useWriteContract({
     address: contractAddress,
     abi: abi,
-    functionName: "deleteCampaign",
-  })
+    functionName: "cancelCampaign",
+  });
 
   const { writeContractAsync: contribute } = useWriteContract({
     address: contractAddress,
@@ -100,21 +101,6 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         overrides: { gasLimit: 1000000 },
       });
 
-      // const newCampaign = {
-      //   title,
-      //   goal,
-      //   description,
-      //   category,
-      //   duration,
-      //   date,
-      //   progress: 0,
-      // };
-
-      // // Update the state and localStorage
-      // const updatedCampaigns = [...campaigns, newCampaign];
-      // setCampaigns(updatedCampaigns);
-      // localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
-
       setSuccessMessage("Campaign created successfully!");
       toast.success("Campaign created successfully", {
         position: "top-center",
@@ -160,6 +146,37 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     const updatedCampaigns = [...campaigns, newCampaign];
     setCampaigns(updatedCampaigns);
     localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
+  };
+
+  const handleDeleteCampaign = async (indexToDelete) => {
+    const deletedCampaign = campaigns[indexToDelete]; // Get the campaign to be deleted
+
+    try {
+      await cancelCampaign({
+        address: contractAddress,
+        abi: abi,
+        functionName: "cancelCampaign",
+        args: [deletedCampaign.address],
+      });
+
+      // Update the state to reflect the deleted campaign
+      const updatedCampaigns = campaigns.filter(
+        (_, index) => index !== indexToDelete
+      );
+      setCampaigns(updatedCampaigns);
+
+      toast.success("Campaign deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting campaign:", error);
+      setErrorMessage(
+        `Failed to delete campaign: ${error.message || "unknown error"}`
+      );
+      toast.error(
+        `Failed to delete campaign: ${error.message || "unknown error"}`
+      );
+    } finally {
+      setIsLoading(false); // Hide the loading indicator
+    }
   };
 
   const handleDonateCampaign = async (index) => {
@@ -290,6 +307,11 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
               <div className="flex flex-row justify-between">
                 <span>{campaign1.date}</span>
                 <span>{campaign1.goal} ETH</span>
+                <IoMdClose
+                  size={24}
+                  color="red"
+                  onClick={() => handleDeleteCampaign(indexToDelete)}
+                />
               </div>
               <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
                 {campaign1.title}

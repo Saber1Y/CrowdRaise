@@ -52,14 +52,7 @@ contract CampaignFactory {
     }
 
     // Cancel a campaign
-    function cancelCampaign(Campaign _campaign) public {
-        address caller_ = msg.sender;
-        if (_campaign.creator() != caller_) {
-            revert AccessDenied();
-        }
-        _campaign.cancelCampaign();
-        emit CampaignCanceled(address(_campaign));
-    }
+ 
 
     // Contribute to a campaign by sending ETH
     function contribute(Campaign _campaign) public payable {
@@ -109,3 +102,11 @@ contract CampaignFactory {
         return campaigns.length;
     }
 }
+   function cancelCampaign(Campaign _campaign) public {
+        address caller_ = msg.sender;
+        if (_campaign.creator() != caller_) {
+            revert AccessDenied();
+        }
+        _campaign.cancelCampaign();
+        emit CampaignCanceled(address(_campaign));
+    }
