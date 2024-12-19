@@ -94,26 +94,28 @@ contract Campaign is Ownable(msg.sender) {
     }
 
     // Contribute to this Campaign by sending ETH
-    function contribute()
+    function contribute(
+        address _customer
+    )
         public
         payable
         hasStarted
         hasNotEnded
         isNotCanceled
         goalNotReached
+        onlyOwner
     {
-        address customer_ = msg.sender;
         uint amount_ = msg.value;
         if (amount_ <= 0) revert AmountLessThanZero();
         if (totalEthContributed + amount_ > goal) revert CampaignGoalExceeded();
-        if (!contributed[customer_]) {
-            contributed[customer_] = true;
-            contributors.push(customer_);
+        if (!contributed[_customer]) {
+            contributed[_customer] = true;
+            contributors.push(_customer);
         }
 
-        contributions[customer_] += amount_;
+        contributions[_customer] += amount_;
         totalEthContributed += amount_;
-        emit ContributionMade(customer_, amount_);
+        emit ContributionMade(_customer, amount_);
     }
 
     // Cancel the campaign

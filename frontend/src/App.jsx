@@ -6,7 +6,8 @@ import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { config } from "../src/constants/config";
 
-import crowdContract from "../src/Data/CrowdFunding.json";
+import factoryContract from "../src/Data/ABI/CampaignFactory.sol/CampaignFactory.json";
+import factoryContractDeployed from "../src/Data/BC/DeployCampaignFactory.s.sol/31337/run-latest.json";
 
 import Hero from "./constants/Hero";
 import CardList from "./constants/CardList";
@@ -21,8 +22,9 @@ import Navbar from "./constants/Navbar"; // Import Navbar
 const queryClient = new QueryClient();
 
 function App() {
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
-  const abi = crowdContract.abi;
+  const contractAddress =
+    factoryContractDeployed.transactions[0].contractAddress;
+  const abi = factoryContract.abi;
 
   return (
     <WagmiProvider config={config}>

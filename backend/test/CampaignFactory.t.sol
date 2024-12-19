@@ -2,8 +2,9 @@
 pragma solidity ^0.8.20;
 
 import {Test, console2} from "forge-std/Test.sol";
-import {CampaignFactory} from "../src/CampaignFactory.sol";
+import {CampaignFactory, CampaignPreview} from "../src/CampaignFactory.sol";
 import {Campaign} from "../src/Campaign.sol";
+import {ICampaign} from "../src/ICampaign.sol";
 
 contract CampaignFactoryTest is Test {
     CampaignFactory public factory;
@@ -46,11 +47,10 @@ contract CampaignFactoryTest is Test {
 
         assertEq(factory.getCampaignsCount(), 1);
 
-        Campaign[] memory creatorCampaigns = factory.getCampaignsByCreator(
-            creator
-        );
+        CampaignPreview[] memory creatorCampaigns = factory
+            .getCampaignsByCreator(creator);
         assertEq(creatorCampaigns.length, 1);
-        assertEq(address(creatorCampaigns[0]), campaignAddr);
+        assertEq(address(creatorCampaigns[0].campaignAddress), campaignAddr);
 
         vm.stopPrank();
     }
@@ -67,14 +67,16 @@ contract CampaignFactoryTest is Test {
 
         // Contribute
         vm.prank(contributor);
-        factory.contribute{value: 0.5 ether}(Campaign(campaignAddr));
+        factory.contribute{value: 0.5 ether}(
+            factory.campaignAddressToId(campaignAddr)
+        );
 
         assertEq(address(campaignAddr).balance, 0.5 ether);
     }
 
     function test_CancelCampaign() public {
         // Create campaign
-        vm.prank(owner);
+        vm.startPrank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
             START_DATE,
@@ -83,10 +85,10 @@ contract CampaignFactoryTest is Test {
         );
 
         // Cancel campaign
-        vm.prank(owner);
-        factory.cancelCampaign(Campaign(campaignAddr));
+        factory.cancelCampaign(factory.campaignAddressToId(campaignAddr));
 
         assertFalse(factory.isActive(Campaign(campaignAddr)));
+        vm.stopPrank();
     }
 
     function testFail_CancelCampaignNonOwner() public {
@@ -101,30 +103,35 @@ contract CampaignFactoryTest is Test {
 
         // Try to cancel campaign as non-owner (should fail)
         vm.prank(contributor);
-        factory.cancelCampaign(Campaign(campaignAddr));
+        factory.cancelCampaign(factory.campaignAddressToId(campaignAddr));
     }
 
     function test_WithdrawFunds() public {
         // Create campaign
-        vm.prank(owner);
+        vm.startPrank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
             block.timestamp,
             END_DATE,
             GOAL
         );
+        vm.stopPrank();
 
         // Contribute
-        vm.prank(contributor);
-        factory.contribute{value: 1 ether}(Campaign(campaignAddr));
+        vm.startPrank(contributor);
+        factory.contribute{value: 1 ether}(
+            factory.campaignAddressToId(campaignAddr)
+        );
 
         // Move time past end date
         vm.warp(END_DATE + 1);
+        vm.stopPrank();
 
         // Withdraw
         uint256 initialBalance = owner.balance;
-        vm.prank(owner);
-        factory.withdraw(Campaign(campaignAddr));
+        vm.startPrank(owner);
+        factory.withdraw(factory.campaignAddressToId(campaignAddr));
+        vm.stopPrank();
 
         assertEq(owner.balance - initialBalance, 1 ether);
         assertEq(address(campaignAddr).balance, 0);
@@ -132,7 +139,7 @@ contract CampaignFactoryTest is Test {
 
     function test_Refund() public {
         // Create campaign
-        vm.prank(owner);
+        vm.startPrank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
             block.timestamp,
@@ -140,19 +147,22 @@ contract CampaignFactoryTest is Test {
             2 ether // Set goal higher than contribution
         );
 
+        vm.stopPrank();
+        vm.startPrank(contributor);
         // Contribute
-        vm.prank(contributor);
-        factory.contribute{value: 1 ether}(Campaign(campaignAddr));
+        factory.contribute{value: 1 ether}(
+            factory.campaignAddressToId(campaignAddr)
+        );
 
         // Move time past end date
         vm.warp(END_DATE + 1);
 
         // Refund
         uint256 initialBalance = contributor.balance;
-        vm.prank(contributor);
         factory.refund(Campaign(campaignAddr));
+        vm.stopPrank();
 
-        // assertEq(contributor.balance - initialBalance, 1 ether);
+        assertEq(contributor.balance - initialBalance, 1 ether);
     }
 
     function test_GetAllCampaigns() public {
@@ -163,7 +173,7 @@ contract CampaignFactoryTest is Test {
         factory.createCampaign("Campaign 2", START_DATE, END_DATE, GOAL);
         factory.createCampaign("Campaign 3", START_DATE, END_DATE, GOAL);
 
-        Campaign[] memory allCampaigns = factory.getAllCampaigns();
+        CampaignPreview[] memory allCampaigns = factory.getAllCampaigns();
         assertEq(allCampaigns.length, 3);
 
         vm.stopPrank();

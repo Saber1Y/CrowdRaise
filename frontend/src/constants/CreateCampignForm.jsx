@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { useWriteContract, useReadContract } from "wagmi";
-import { ToastContainer, toast } from "react-toastify";
-import { parseEther } from "viem";
-import "react-toastify/dist/ReactToastify.css";
+import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { formatEther, parseEther } from "viem";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 
 const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [goal, setGoal] = useState("");
@@ -17,102 +17,106 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [showDonateInput, setShowDonateInput] = useState(null); // Track which campaign's donate input is shown
+  const { address: user } = useAccount();
 
-  const [titles, setTitles] = useState([]);
-  const [descriptions, setDescriptions] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [durations, setDurations] = useState([]);
-  const [goals, setGoals] = useState([]);
-  const [dates, setDates] = useState([]);
-  const [donationAmounts, setDonationAmounts] = useState([]);
-
-  const [progress, setProgress] = useState(0);
-  // const [campaignIds, setCampaignIds] = useState([]);
+  const [donationAmount, setDonationAmount] = useState("");
 
   const [campaigns, setCampaigns] = useState([]);
+  const [filter, setFilter] = useState("all");
+  const [filteredCampaigns, setFilteredCampaigns] = useState([]);
 
-  const { writeContractAsync: createCampaign } = useWriteContract({
+  const { data, refetch } = useReadContract({
     address: contractAddress,
     abi: abi,
-    functionName: "createCampaign",
+    functionName: "getAllCampaigns",
   });
 
-  const { writeContractAsync: cancelCampaign } = useWriteContract({
-    address: contractAddress,
-    abi: abi,
-    functionName: "cancelCampaign",
-  });
+  const { writeContractAsync: createCampaign } = useWriteContract();
 
-  const { writeContractAsync: contribute } = useWriteContract({
-    address: contractAddress,
-    abi: abi,
-    functionName: "contribute",
-  });
+  const { writeContractAsync: cancelCampaign } = useWriteContract();
 
-  const { readContractAsync: getProgress } = useReadContract({
-    address: contractAddress,
-    abi: abi,
-    functionName: "getProgress",
-  });
+  const {
+    writeContractAsync: contribute,
+    isPending: contributePending,
+    isSuccess: contributeSuccess,
+  } = useWriteContract();
 
   const handleShowForm = () => setShowForm(true);
 
-  // const fetchProgress = async (campaignId, index) => {
-  //   try {
-  //     const result = await getProgress({ args: [campaignIds] });
-  //     setProgress((prev) =>
-  //       prev.map((val, idx) => (idx === index ? result : val))
-  //     );
-  //   } catch (error) {
-  //     console.error(
-  //       `Failed to fetch progress for campaign ${campaignId}:`,
-  //       error
-  //     );
-  //     toast.error(`Failed to fetch progress for campaign ${campaignId}`);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (campaignIds.length > 0) {
-  //     campaignIds.forEach((campaignId, index) => {
-  //       fetchProgress(campaignId, index);
-  //     });
-  //   }
-  // }, [campaignIds]);
+  useEffect(() => {
+    const filtered = campaigns.filter((campaign) => {
+      if (filter === "all") return true;
+      if (filter === "canceled") return campaign.isCanceled;
+      if (filter === "mine") return campaign.creator === user;
+    });
+    setFilteredCampaigns(filtered);
+  }, [filter, campaigns, user]);
 
   useEffect(() => {
-    // Load campaigns from local storage when the component mounts
-    const savedCampaigns = localStorage.getItem("campaigns");
-    if (savedCampaigns) {
-      setCampaigns(JSON.parse(savedCampaigns));
-    }
-  }, []);
+    const fetch = async () => {
+      toast.success("Donation successful!", { position: "top-center" });
+      setDonationAmount("");
+      await refetch();
+    };
+    if (contributeSuccess) fetch();
+  }, [contributeSuccess]);
+
+  // Use effect to watch when campaigns array changes (i.e when a change is made by the user) and then format all necessary field of a campaign
+  useEffect(() => {
+    setCampaigns(
+      (data || []).map(
+        ({
+          campaignAddress,
+          title,
+          startDate,
+          endDate,
+          goal,
+          isCanceled,
+          totalEthContributed,
+          creator,
+        }) => {
+          return {
+            address: campaignAddress,
+            title,
+            startDate: new Date(Number(startDate) * 1000).toDateString(),
+            endDate: new Date(Number(endDate) * 1000).toDateString(),
+            goal: formatEther(goal),
+            isCanceled,
+            totalEthContributed: formatEther(totalEthContributed),
+            creator,
+            progress: (
+              (Number(totalEthContributed) / Number(goal)) *
+              100
+            ).toFixed(2),
+          };
+        }
+      )
+    );
+  }, [data]);
 
   const handleCreateCampaign = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      let startDate = new Date(date);
       await createCampaign({
         address: contractAddress,
         abi: abi,
         functionName: "createCampaign",
-        args: [parseEther(goal), parseInt(duration, 10)],
-        overrides: { gasLimit: 1000000 },
+        args: [
+          title,
+          Math.floor(startDate.getTime() / 1000),
+          Math.floor(startDate.setDate(startDate.getDate() + duration) / 1000),
+          parseEther(goal),
+        ],
       });
 
       setSuccessMessage("Campaign created successfully!");
       toast.success("Campaign created successfully", {
         position: "top-center",
       });
-
-      setTitles((prev) => [...prev, title]);
-      setDescriptions((prev) => [...prev, description]);
-      setCategories((prev) => [...prev, category]);
-      setDurations((prev) => [...prev, duration]);
-      setGoals((prev) => [...prev, goal]);
-      setDates((prev) => [...prev, date]);
-      setDonationAmounts((prev) => [...prev, ""]);
+      await refetch();
 
       setGoal("");
       setTitle("");
@@ -120,59 +124,37 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       setCategory("");
       setDuration("");
       setDate("");
+      setShowForm(false);
     } catch (error) {
       console.error("Error creating campaign:", error);
       setErrorMessage(
-        `Failed to create campaign: ${error.message || "unknown error"}`
+        `Failed to create campaign: ${error.shortMessage || "unknown error"}`
       );
       toast.error(
-        `Failed to create campaign: ${error.message || "unknown error"}`
+        `Failed to create campaign: ${error.shortMessage || "unknown error"}`
       );
     } finally {
       setIsLoading(false);
     }
-
-    const newCampaign = {
-      title,
-      goal,
-      description,
-      category,
-      duration,
-      date,
-      progress: 0,
-    };
-
-    // Update the state and localStorage
-    const updatedCampaigns = [...campaigns, newCampaign];
-    setCampaigns(updatedCampaigns);
-    localStorage.setItem("campaigns", JSON.stringify(updatedCampaigns));
   };
 
   const handleDeleteCampaign = async (indexToDelete) => {
-    const deletedCampaign = campaigns[indexToDelete]; // Get the campaign to be deleted
-
     try {
       await cancelCampaign({
         address: contractAddress,
         abi: abi,
         functionName: "cancelCampaign",
-        args: [deletedCampaign.address],
+        args: [indexToDelete],
       });
-
-      // Update the state to reflect the deleted campaign
-      const updatedCampaigns = campaigns.filter(
-        (_, index) => index !== indexToDelete
-      );
-      setCampaigns(updatedCampaigns);
-
+      await refetch();
       toast.success("Campaign deleted successfully!");
     } catch (error) {
       console.error("Error deleting campaign:", error);
       setErrorMessage(
-        `Failed to delete campaign: ${error.message || "unknown error"}`
+        `Failed to delete campaign: ${error.shortMessage || "unknown error"}`
       );
       toast.error(
-        `Failed to delete campaign: ${error.message || "unknown error"}`
+        `Failed to delete campaign: ${error.shortMessage || "unknown error"}`
       );
     } finally {
       setIsLoading(false); // Hide the loading indicator
@@ -180,7 +162,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   };
 
   const handleDonateCampaign = async (index) => {
-    const amount = donationAmounts[index];
+    const amount = donationAmount;
     if (!amount) {
       toast.error("Please enter a donation amount.");
       return;
@@ -191,15 +173,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         address: contractAddress,
         abi: abi,
         functionName: "contribute",
-        args: [parseEther(amount)],
+        args: [index],
+        value: parseEther(amount),
       });
-      toast.success("Donation successful!", { position: "top-center" });
-      setDonationAmounts((prev) =>
-        prev.map((amt, i) => (i === index ? "" : amt))
-      );
     } catch (error) {
-      console.error("Donation failed:", error);
-      toast.error("Donation failed.");
+      console.error("Donation failed:", error.shortMessage);
+      toast.error("Donation failed::  " + error.shortMessage);
     }
   };
 
@@ -298,29 +277,63 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       )}
 
       <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
-        {campaigns.map((campaign1, index) => (
+        <button
+          className="bg-gray-50 rounded-full p-4 border"
+          onClick={() => {
+            setFilter("all");
+          }}
+        >
+          All Campaigns
+        </button>
+        <button
+          className="bg-gray-50 rounded-full p-4 border"
+          onClick={() => {
+            setFilter("canceled");
+          }}
+        >
+          Canceled Campaign
+        </button>
+        <button
+          className="bg-gray-50 rounded-full p-4 border"
+          onClick={() => {
+            setFilter("mine");
+          }}
+        >
+          My Campaigns
+        </button>
+      </section>
+      <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
+        {filteredCampaigns.map((campaign1, index) => (
           <div
             className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
             key={index}
           >
             <div className="p-5">
               <div className="flex flex-row justify-between">
-                <span>{campaign1.date}</span>
+                <span>{campaign1.startDate}</span>
                 <span>{campaign1.goal} ETH</span>
-                <IoMdClose
-                  size={24}
-                  color="red"
-                  onClick={() => handleDeleteCampaign(indexToDelete)}
-                />
+                {campaign1.creator == user && (
+                  <IoMdClose
+                    size={24}
+                    color="red"
+                    onClick={() =>
+                      campaign1.isCanceled
+                        ? () => {}
+                        : handleDeleteCampaign(index)
+                    }
+                  />
+                )}
               </div>
               <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
                 {campaign1.title}
               </h5>
-              <p>{campaign1.descriptions}</p>
+              <p>{campaign1.descriptions || "Empty Description"}</p>
+              <p>STATUS: {campaign1.isCanceled ? "Canceled" : "Active"}</p>
 
               <button
                 onClick={() => setShowDonateInput(index)}
                 className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
+                disabled={campaign1.isCanceled}
               >
                 Donate now
               </button>
@@ -332,11 +345,11 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                 <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
                   <div
                     className="bg-blue-600 h-2.5 rounded-full"
-                    style={{ width: `${progress[index] || 0}%` }}
+                    style={{ width: `${campaign1.progress}%` }}
                   ></div>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
-                  Progress: {progress[index] || 0}%
+                  Progress: {campaign1.progress}%
                 </p>
               </div>
 
@@ -345,21 +358,16 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                   <input
                     type="number"
                     placeholder="Donation Amount (ETH)"
-                    value={donationAmounts[index] || ""}
-                    onChange={(e) =>
-                      setDonationAmounts((prev) =>
-                        prev.map((amt, i) =>
-                          i === index ? e.target.value : amt
-                        )
-                      )
-                    }
+                    value={donationAmount}
+                    onChange={(e) => setDonationAmount(e.target.value)}
                     className="w-full px-3 py-2 border rounded-md text-black"
                   />
                   <button
+                    disabled={contributePending}
                     onClick={() => handleDonateCampaign(index)}
                     className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-2"
                   >
-                    Confirm Donation
+                    {contributePending ? "Wait..." : "Confirm Donation"}
                   </button>
                 </div>
               )}
