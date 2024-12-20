@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { formatEther, parseEther } from "viem";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { motion } from "motion/react";
 
 const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [goal, setGoal] = useState("");
@@ -184,9 +185,8 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
 
   return (
     <div className="bg-white">
-
       <h1 className="flex items-center justify-center font-bold text-[32px] my-5">
-        Open <span className="text-[#13ADB7] ml-2">Donations</span> 
+        Open <span className="text-[#13ADB7] ml-2">Donations</span>
       </h1>
 
       <h2 className="text-2xl font-bold mb-6 text-center">
@@ -282,30 +282,37 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       )}
 
       <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
-        <button
+        <motion.button
           className="bg-[#13ADB7] text-white py-4 px-4 hover:opacity-55 rounded-full p-4 border"
-          onClick={() => {
-            setFilter("all");
-          }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ y: [0, -5, 0] }}
+          layout
         >
-          All Campaigns
-        </button>
-        <button
+          My Campaigns
+        </motion.button>
+
+        <motion.button
           className="bg-[#13ADB7] text-white py-4 px-4 hover:opacity-55 rounded-full p-4 border"
           onClick={() => {
             setFilter("canceled");
           }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ y: [0, -5, 0] }}
+          layout
         >
           Canceled Campaign
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           className="bg-[#13ADB7] text-white py-4 px-4 hover:opacity-55 rounded-full p-4 border"
           onClick={() => {
             setFilter("mine");
           }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ y: [0, -5, 0] }}
+          layout
         >
           My Campaigns
-        </button>
+        </motion.button>
       </section>
 
       <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-3 md:space-y-5">
