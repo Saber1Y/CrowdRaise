@@ -8,6 +8,7 @@ import {ICampaign} from "./ICampaign.sol";
 struct CampaignPreview {
     address campaignAddress;
     string title;
+    string description;
     uint startDate;
     uint endDate;
     uint goal;
@@ -46,6 +47,7 @@ contract CampaignFactory {
 
     function createCampaign(
         string memory _title,
+        string memory _description,
         uint _startDate,
         uint _endDate,
         uint _goal
@@ -53,6 +55,7 @@ contract CampaignFactory {
         address creator_ = msg.sender;
         Campaign newCampaign = new Campaign(
             _title,
+            _description,
             _startDate,
             _endDate,
             _goal,
@@ -62,6 +65,7 @@ contract CampaignFactory {
         CampaignPreview memory newCampaignPreview = CampaignPreview({
             campaignAddress: address(newCampaign),
             title: _title,
+            description: _description,
             startDate: _startDate,
             endDate: _endDate,
             goal: _goal,

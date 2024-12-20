@@ -6,6 +6,7 @@ import {Ownable} from "openzeppelin-contracts/contracts/access/Ownable.sol";
 
 contract Campaign is Ownable(msg.sender) {
     string public title;
+    string public description;
     uint public startDate;
     uint public endDate;
     uint public goal;
@@ -65,12 +66,14 @@ contract Campaign is Ownable(msg.sender) {
 
     constructor(
         string memory _title,
+        string memory _description,
         uint _startDate,
         uint _endDate,
         uint _goal,
         address _creator
     ) {
         title = _title;
+        description = _description;
         startDate = _startDate;
         endDate = _endDate;
         goal = _goal;

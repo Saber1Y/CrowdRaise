@@ -14,6 +14,7 @@ contract CampaignFactoryTest is Test {
 
     // Test campaign parameters
     string constant TITLE = "Test Campaign";
+    string constant DESCRIPTION = "Test Campaign";  
     uint256 constant START_DATE = 1700000000; // Some time in the future
     uint256 constant END_DATE = 1800000000; // Later than START_DATE
     uint256 constant GOAL = 1 ether;
@@ -32,6 +33,7 @@ contract CampaignFactoryTest is Test {
 
         address campaignAddr = factory.createCampaign(
             TITLE,
+            DESCRIPTION,
             START_DATE,
             END_DATE,
             GOAL
@@ -40,6 +42,7 @@ contract CampaignFactoryTest is Test {
         Campaign campaign = Campaign(campaignAddr);
 
         assertEq(campaign.title(), TITLE);
+        assertEq(campaign.description(), DESCRIPTION);
         assertEq(campaign.startDate(), START_DATE);
         assertEq(campaign.endDate(), END_DATE);
         assertEq(campaign.goal(), GOAL);
@@ -60,6 +63,7 @@ contract CampaignFactoryTest is Test {
         vm.prank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
+            DESCRIPTION,
             block.timestamp,
             END_DATE,
             GOAL
@@ -79,6 +83,7 @@ contract CampaignFactoryTest is Test {
         vm.startPrank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
+            DESCRIPTION,
             START_DATE,
             END_DATE,
             GOAL
@@ -96,6 +101,7 @@ contract CampaignFactoryTest is Test {
         vm.prank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
+            DESCRIPTION,
             START_DATE,
             END_DATE,
             GOAL
@@ -111,6 +117,7 @@ contract CampaignFactoryTest is Test {
         vm.startPrank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
+            DESCRIPTION,
             block.timestamp,
             END_DATE,
             GOAL
@@ -142,6 +149,7 @@ contract CampaignFactoryTest is Test {
         vm.startPrank(owner);
         address campaignAddr = factory.createCampaign(
             TITLE,
+            DESCRIPTION,
             block.timestamp,
             END_DATE,
             2 ether // Set goal higher than contribution
@@ -169,7 +177,7 @@ contract CampaignFactoryTest is Test {
         vm.startPrank(owner);
 
         // Create multiple campaigns
-        factory.createCampaign(TITLE, START_DATE, END_DATE, GOAL);
+        factory.createCampaign(TITLE, DESCRIPTION, START_DATE, END_DATE, GOAL);
         factory.createCampaign("Campaign 2", START_DATE, END_DATE, GOAL);
         factory.createCampaign("Campaign 3", START_DATE, END_DATE, GOAL);
 

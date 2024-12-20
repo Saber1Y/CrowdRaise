@@ -69,6 +69,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         ({
           campaignAddress,
           title,
+          description,
           startDate,
           endDate,
           goal,
@@ -79,6 +80,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
           return {
             address: campaignAddress,
             title,
+            description,
             startDate: new Date(Number(startDate) * 1000).toDateString(),
             endDate: new Date(Number(endDate) * 1000).toDateString(),
             goal: formatEther(goal),
@@ -107,6 +109,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
         functionName: "createCampaign",
         args: [
           title,
+          description,
           Math.floor(startDate.getTime() / 1000),
           Math.floor(startDate.setDate(startDate.getDate() + duration) / 1000),
           parseEther(goal),
@@ -340,7 +343,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
               <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
                 {campaign1.title}
               </h5>
-              <p>{campaign1.descriptions || "Empty Description"}</p>
+              <p>{campaign1.description || "Empty Description"}</p>
               <p>STATUS: {campaign1.isCanceled ? "Canceled" : "Active"}</p>
 
               <button

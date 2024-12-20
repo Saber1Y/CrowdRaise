@@ -14,7 +14,6 @@ import CreateCampignForm from "./constants/CreateCampignForm";
 import Distribute from "./constants/Distribute";
 import Footer from "./constants/Footer";
 import GroupImg from "./constants/GroupImg";
-import Mycampaign from "./constants/Mycampaign"; // Import My Campaigns page
 import Navbar from "./constants/Navbar"; // Import Navbar
 
 const queryClient = new QueryClient();
@@ -50,7 +49,6 @@ function App() {
                 path="/mycampaign"
                 element={
                   <div className="flex flex-col">
-                    <Mycampaign />
                     <Distribute />
                     <GroupImg />
                     <Footer />

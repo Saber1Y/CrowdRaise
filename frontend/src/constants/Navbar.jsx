@@ -23,11 +23,7 @@ const Navbar = () => {
         <li>
           <Link to="/">Home</Link>
         </li>
-        {isConnected && (
-          <li>
-            <Link to="/mycampaign">My Campaigns</Link>
-          </li>
-        )}
+       
       </ul>
 
       {/* Hamburger Menu Button */}
