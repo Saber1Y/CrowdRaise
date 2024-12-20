@@ -59,13 +59,6 @@ const Navbar = () => {
                 Home
               </Link>
             </li>
-            {isConnected && (
-              <li>
-                <Link to="/mycampaign" onClick={() => setIsMenuOpen(false)}>
-                  My Campaigns
-                </Link>
-              </li>
-            )}
             <li>
               <ConnectButton />
             </li>

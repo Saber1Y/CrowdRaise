@@ -10,10 +10,8 @@ import factoryContract from "../src/Data/ABI/CampaignFactory.sol/CampaignFactory
 import factoryContractDeployed from "../src/Data/BC/DeployCampaignFactory.s.sol/31337/run-latest.json";
 
 import Hero from "./constants/Hero";
-import CardList from "./constants/CardList";
 import CreateCampignForm from "./constants/CreateCampignForm";
 import Distribute from "./constants/Distribute";
-import Donations from "./constants/Donations";
 import Footer from "./constants/Footer";
 import GroupImg from "./constants/GroupImg";
 import Mycampaign from "./constants/Mycampaign"; // Import My Campaigns page
@@ -42,8 +40,6 @@ function App() {
                       contractAddress={contractAddress}
                       abi={abi}
                     />
-                    <Donations />
-                    <CardList />
                     <Distribute />
                     <GroupImg />
                     <Footer />
