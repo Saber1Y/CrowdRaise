@@ -26,7 +26,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [filter, setFilter] = useState("all");
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
 
-  const [imagePreview, setImagePreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState({});
   const [imageFile, setImageFile] = useState(null);
 
   const { data, refetch } = useReadContract({
@@ -334,6 +334,9 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ y: [0, -5, 0] }}
           layout
+          onClick={() => {
+            setFilter("all");
+          }}
         >
           All Campaigns
         </motion.button>
@@ -364,92 +367,101 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
 
       <hr className="my-3 bg-black" />
 
-      <section className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-5 md:space-y-5">
-        {filteredCampaigns.map((campaign1, index) => (
-          <div
-            className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
-            key={index}
-          >
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Uploaded Preview"
-                className="w-[330px]  object-contain border rounded-md"
-              />
-            )}
-            <div className="p-5">
-              <div className="flex flex-row justify-between">
-                <span>{campaign1.startDate}</span>
-
-                {campaign1.creator == user && (
-                  <IoMdClose
-                    size={24}
-                    color="red"
-                    onClick={() =>
-                      campaign1.isCanceled
-                        ? () => {}
-                        : handleDeleteCampaign(index)
-                    }
+      <section>
+        {filteredCampaigns.length === 0 ? (
+          <p className="text-center text-2xl text-gray-500 flex justify-center items-center">
+            No campaigns found.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 items-center place-items-center space-x-3 space-y-3 my-5 md:space-y-5">
+            {filteredCampaigns.map((campaign1, index) => (
+              <div
+                className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
+                key={index}
+              >
+                {imagePreview && (
+                  <img
+                    src={imagePreview}
+                    alt="Uploaded Preview"
+                    className="w-[330px]  object-contain border rounded-md"
                   />
                 )}
-              </div>
-              <div className="flex flex-col space-y-2">
-                <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
-                  {campaign1.title}
-                </h5>
-                <p>{campaign1.description || "Empty Description"}</p>
-                <p>
-                  STATUS:{" "}
-                  <span className="text-red-500">
-                    {campaign1.isCanceled ? "Canceled" : "Active"}
-                  </span>
-                </p>
-                <p>
-                  Goal: <span>{campaign1.goal} ETH</span>{" "}
-                </p>
-              </div>
-              <button
-                onClick={() => setShowDonateInput(index)}
-                className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
-                disabled={campaign1.isCanceled}
-              >
-                Donate now
-              </button>
-              <div
-                key={index}
-                className="p-5 bg-white shadow-md rounded-md border border-gray-200"
-              >
-                <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
-                  <div
-                    className="bg-blue-600 h-2.5 rounded-full"
-                    style={{ width: `${campaign1.progress}%` }}
-                  ></div>
-                </div>
-                <p className="mt-2 text-sm text-gray-600">
-                  Progress: {campaign1.progress}%
-                </p>
-              </div>
-              {showDonateInput === index && (
-                <div className="mt-3">
-                  <input
-                    type="number"
-                    placeholder="Donation Amount (ETH)"
-                    value={donationAmount}
-                    onChange={(e) => setDonationAmount(e.target.value)}
-                    className="w-full px-3 py-2 border rounded-md text-black"
-                  />
+                <div className="p-5">
+                  <div className="flex flex-row justify-between">
+                    <span>{campaign1.startDate}</span>
+
+                    {campaign1.creator == user && (
+                      <IoMdClose
+                        size={24}
+                        color="red"
+                        className="cursor-pointer hover:bg-black rounded-full"
+                        onClick={() =>
+                          campaign1.isCanceled
+                            ? () => {}
+                            : handleDeleteCampaign(index)
+                        }
+                      />
+                    )}
+                  </div>
+                  <div className="flex flex-col space-y-2">
+                    <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
+                      {campaign1.title}
+                    </h5>
+                    <p>{campaign1.description || "Empty Description"}</p>
+                    <p>
+                      STATUS:{" "}
+                      <span className="text-red-500">
+                        {campaign1.isCanceled ? "Canceled" : "Active"}
+                      </span>
+                    </p>
+                    <p>
+                      Goal: <span>{campaign1.goal} ETH</span>{" "}
+                    </p>
+                  </div>
                   <button
-                    disabled={contributePending}
-                    onClick={() => handleDonateCampaign(index)}
-                    className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-2"
+                    onClick={() => setShowDonateInput(index)}
+                    className="w-full items-center px-3 py-2 text-sm font-medium border border-[#13ADB7] text-[#13ADB7] rounded-md hover:bg-[#13ADB7] hover:text-white mt-3"
+                    disabled={campaign1.isCanceled}
                   >
-                    {contributePending ? "Wait..." : "Confirm Donation"}
+                    Donate now
                   </button>
+                  <div
+                    key={index}
+                    className="p-5 bg-white shadow-md rounded-md border border-gray-200"
+                  >
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700 mt-2">
+                      <div
+                        className="bg-blue-600 h-2.5 rounded-full"
+                        style={{ width: `${campaign1.progress}%` }}
+                      ></div>
+                    </div>
+                    <p className="mt-2 text-sm text-gray-600">
+                      Progress: {campaign1.progress}%
+                    </p>
+                  </div>
+                  {showDonateInput === index && (
+                    <div className="mt-3">
+                      <input
+                        type="number"
+                        placeholder="Donation Amount (ETH)"
+                        value={donationAmount}
+                        onChange={(e) => setDonationAmount(e.target.value)}
+                        className="w-full px-3 py-2 border rounded-md text-black"
+                      />
+                      <button
+                        disabled={contributePending}
+                        onClick={() => handleDonateCampaign(index)}
+                        className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded mt-2"
+                      >
+                        {contributePending ? "Wait..." : "Confirm Donation"}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
       </section>
 
       <ToastContainer />
