@@ -219,7 +219,7 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   }, [imagePreview]);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white" id="projects">
       <h1 className="flex items-center justify-center font-bold text-[35px] my-5">
         Open <span className="text-[#13ADB7] ml-2 ">Donations</span>
       </h1>

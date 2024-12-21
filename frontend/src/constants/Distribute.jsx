@@ -20,17 +20,12 @@ const Distribute = () => {
     {
       id: 2,
       question: "Why use Open Data services?",
-      answer: "Test",
+      answer: "Because it is decentralised and better",
     },
     {
       id: 3,
       question: "Can Open Data be accessed by the public?",
-      answer: "Test",
-    },
-    {
-      id: 4,
-      question: "Can Open Data be accessed by the public?",
-      answer: "Test",
+      answer: "Yes!",
     },
   ];
 
