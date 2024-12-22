@@ -12,8 +12,12 @@ const Navbar = () => {
     <nav className="absolute top-0 left-0 w-full flex justify-between items-center p-6 z-20 bg-white text-black shadow-md">
       {/* Logo */}
       <div className="flex items-center space-x-2">
-        <img src={LOGO} className="w-[25px] h-[25px]" alt="Logo" />
-        <span className="text-[20px] font-semibold leading-tight">
+        <img
+          src={LOGO}
+          className="w-[25px] h-[25px] cursor-pointer"
+          alt="Logo"
+        />
+        <span className="text-[20px] font-semibold leading-tight cursor-pointer">
           CrowdRaise
         </span>
       </div>
@@ -23,7 +27,6 @@ const Navbar = () => {
         <li>
           <Link to="/">Home</Link>
         </li>
-       
       </ul>
 
       {/* Hamburger Menu Button */}
@@ -62,7 +65,6 @@ const Navbar = () => {
         </div>
       )}
 
-  
       <div className="hidden md:block">
         <ConnectButton />
       </div>

@@ -64,3 +64,8 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+### Anvil substiture
+
+Create Key: `Cast wallet import key name:defualtKey --interactive`
+Deploy: forge script script/  --rpc-url --account saberKey --sender address:deployedat

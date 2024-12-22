@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import Navbar from "./Navbar";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { motion } from "motion/react";
 
 const Hero = () => {
   useEffect(() => {
@@ -36,16 +37,26 @@ const Hero = () => {
         </p>
 
         <div className="flex justify-center items-center space-x-4">
-          <button
-            className="px-10 py-3  text-[15px] md:text-[18px] text-white border border-white rounded-full"
+          <motion.button
+            className="px-10 py-3 text-[15px] md:text-[18px] text-white border border-[#13ADB7] rounded-full"
             onClick={() => {
               document
                 .getElementById("projects")
                 .scrollIntoView({ behavior: "smooth" });
             }}
+            // Animation variants for hover and tap
+            whileHover={{
+              scale: 1.1,
+              backgroundColor: "#ffffff",
+              color: "#000000",
+              transition: { duration: 0.3 },
+            }}
+            whileTap={{
+              scale: 0.95,
+            }}
           >
             Donate now
-          </button>
+          </motion.button>
         </div>
       </div>
     </section>

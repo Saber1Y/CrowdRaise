@@ -26,8 +26,8 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
   const [filter, setFilter] = useState("all");
   const [filteredCampaigns, setFilteredCampaigns] = useState([]);
 
-  const [imagePreview, setImagePreview] = useState({});
-  const [imageFile, setImageFile] = useState(null);
+  // const [imagePreview, setImagePreview] = useState({});
+  // const [imageFile, setImageFile] = useState(null);
 
   const { data, refetch } = useReadContract({
     address: contractAddress,
@@ -189,34 +189,34 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
     }
   };
 
-  useEffect(() => {
-    const storedImagePreview = localStorage.getItem("imagePreview");
-    if (storedImagePreview) {
-      setImagePreview(storedImagePreview);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const storedImagePreview = localStorage.getItem("imagePreview");
+  //   if (storedImagePreview) {
+  //     setImagePreview(storedImagePreview);
+  //   }
+  // }, []);
 
-  const handleImageUpload = (event) => {
-    const file = event.target.files[0];
+  // const handleImageUpload = (event) => {
+  //   const file = event.target.files[0];
 
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImagePreview(imageUrl);
-      setImageFile(file);
+  //   if (file) {
+  //     const imageUrl = URL.createObjectURL(file);
+  //     setImagePreview(imageUrl);
+  //     setImageFile(file);
 
-      // Save to Local Storage
-      localStorage.setItem("imagePreview", imageUrl);
-    }
-  };
+  //     // Save to Local Storage
+  //     localStorage.setItem("imagePreview", imageUrl);
+  //   }
+  // };
 
-  // Cleanup the temporary URL on unmount
-  useEffect(() => {
-    return () => {
-      if (imagePreview) {
-        URL.revokeObjectURL(imagePreview);
-      }
-    };
-  }, [imagePreview]);
+  // // Cleanup the temporary URL on unmount
+  // useEffect(() => {
+  //   return () => {
+  //     if (imagePreview) {
+  //       URL.revokeObjectURL(imagePreview);
+  //     }
+  //   };
+  // }, [imagePreview]);
 
   return (
     <div className="bg-white" id="projects">
@@ -286,12 +286,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                   className="w-full px-3 py-2 border rounded-md"
                 />
               </div>
-              <input
+              {/* <input
                 type="file"
                 onChange={handleImageUpload}
                 accept="image/*"
                 className="w-full px-3 py-2 border rounded-md mt-3"
-              />
+              /> */}
               <input
                 type="text"
                 placeholder="Goal (ETH)"
@@ -379,13 +379,12 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                 className="w-[330px] bg-white border border-gray-200 rounded-lg shadow"
                 key={index}
               >
-                {imagePreview && (
-                  <img
-                    src={imagePreview}
-                    alt="Uploaded Preview"
-                    className="w-[330px]  object-contain border rounded-md"
-                  />
-                )}
+                {/* <img
+                  src={imagePreview}
+                  alt="Uploaded Preview"
+                  className="w-[330px]  object-contain border rounded-md"
+                /> */}
+
                 <div className="p-5">
                   <div className="flex flex-row justify-between">
                     <span>{campaign1.startDate}</span>
@@ -407,10 +406,15 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
                     <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 my-2">
                       {campaign1.title}
                     </h5>
-                    <p>{campaign1.description || "Empty Description"}</p>
+                    <p>
+                      DESCRIPTION : <br />
+                      <span>
+                        {campaign1.description || "Empty Description"}
+                      </span>
+                    </p>
                     <p>
                       STATUS:{" "}
-                      <span className="text-red-500">
+                      <span className="text-red-500 font-semibold font-mono">
                         {campaign1.isCanceled ? "Canceled" : "Active"}
                       </span>
                     </p>
