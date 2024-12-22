@@ -1,5 +1,4 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "@rainbow-me/rainbowkit/styles.css";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
@@ -27,36 +26,12 @@ function App() {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider>
-          <Router>
-            <Navbar />
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <>
-                    <Hero />
-                    <CreateCampignForm
-                      contractAddress={contractAddress}
-                      abi={abi}
-                    />
-                    <Distribute />
-                    <GroupImg />
-                    <Footer />
-                  </>
-                }
-              />
-              <Route
-                path="/mycampaign"
-                element={
-                  <div className="flex flex-col">
-                    <Distribute />
-                    <GroupImg />
-                    <Footer />
-                  </div>
-                }
-              />
-            </Routes>
-          </Router>
+          <Navbar />
+          <Hero />
+          <CreateCampignForm contractAddress={contractAddress} abi={abi} />
+          <Distribute />
+          <GroupImg />
+          <Footer />
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import LOGO from "../../public/LOGO.png";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const { isConnected } = useAccount();
@@ -25,7 +25,7 @@ const Navbar = () => {
       {/* Desktop Menu */}
       <ul className="hidden md:flex justify-center space-x-5 text-[18px] font-medium cursor-pointer">
         <li>
-          <Link to="/">Home</Link>
+          <p to="/">Home</p>
         </li>
       </ul>
 
@@ -54,9 +54,9 @@ const Navbar = () => {
         <div className="absolute top-[70px] left-0 w-full bg-white shadow-lg p-5 md:hidden">
           <ul className="flex flex-col items-center space-y-4 text-[18px] font-medium cursor-pointer">
             <li>
-              <Link to="/" onClick={() => setIsMenuOpen(false)}>
+              <p onClick={() => setIsMenuOpen(false)}>
                 Home
-              </Link>
+              </p>
             </li>
             <li>
               <ConnectButton />
