@@ -36,6 +36,10 @@ const Footer = () => {
           &copy; {currentYear} Kita Bangun Digital Platform. All rights
           reserved.
         </p>
+        <p>
+          Smart Contract Address: 0x931D6873Cb0e5f6fAd2B6b80933BEF402dcB62b2
+          (Verify on Sepolia Scan){" "}
+        </p>
       </div>
     </footer>
   );

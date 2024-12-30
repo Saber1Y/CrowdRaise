@@ -108,7 +108,7 @@ contract Campaign is Ownable(msg.sender) {
         goalNotReached
         onlyOwner
     {
-        uint amount_ = msg.value;
+        uint256 amount_ = msg.value;
         if (amount_ <= 0) revert AmountLessThanZero();
         if (totalEthContributed + amount_ > goal) revert CampaignGoalExceeded();
         if (!contributed[_customer]) {

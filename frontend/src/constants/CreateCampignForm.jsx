@@ -167,7 +167,6 @@ const CreateCampaignForm = ({ contractAddress, abi }) => {
       setIsLoading(false); // Hide the loading indicator
     }
   };
-
   const handleDonateCampaign = async (index) => {
     const amount = donationAmount;
     if (!amount) {
