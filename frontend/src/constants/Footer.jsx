@@ -37,7 +37,12 @@ const Footer = () => {
           reserved.
         </p>
         <p>
-          Smart Contract Address: 0x931D6873Cb0e5f6fAd2B6b80933BEF402dcB62b2
+          Smart Contract Address:0xf6920D45d16c5FAa9eB40753Bb3F16D353355705
+          (Verify on Sepolia Scan){" "}
+        </p>
+        <p>
+          Confirm By
+          Hash:0x051813873a6e3c0fbb983e0e245e94b9b8e0aa7395c1a16ed603c8219b78b5bf
           (Verify on Sepolia Scan){" "}
         </p>
       </div>
