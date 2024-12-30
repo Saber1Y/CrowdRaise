@@ -24,7 +24,7 @@ export const config = getDefaultConfig({
   chains: [mainnet, sepolia, localhost],
   transports: {
     [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [sepolia.id]: http("https://eth-sepolia.g.alchemy.com/v2/7IAoRyvjCG_IAfzvFbymhZxXRABpcvuV"),
     [localhost.id]: http('http://127.0.0.1:8545'),
   },
 });

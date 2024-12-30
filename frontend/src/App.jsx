@@ -18,8 +18,7 @@ import Navbar from "./constants/Navbar"; // Import Navbar
 const queryClient = new QueryClient();
 
 function App() {
-  const contractAddress =
-    factoryContractDeployed.transactions[0].contractAddress;
+  const contractAddress = "0xf6920D45d16c5FAa9eB40753Bb3F16D353355705";
   const abi = factoryContract.abi;
 
   return (
