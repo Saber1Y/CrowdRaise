@@ -7,20 +7,20 @@ import { motion } from "motion/react";
 const Hero = () => {
   useEffect(() => {
     AOS.init({
-      duration: 1000, 
+      duration: 1000,
       easing: "ease-in-out",
       once: true,
     });
   }, []);
 
   return (
-    <section className="relative bg-[url('/hero.png')] bg-center bg-cover min-h-screen flex flex-col items-center justify-center text-white">
+    <section className="relative bg-[url('/hero.png')] overflow-hidden bg-center bg-cover min-h-screen flex flex-col items-center justify-center text-white">
       <Navbar />
       <div className="absolute inset-0 bg-black opacity-50"></div>
 
-      <div className="relative z-10 text-center" data-aos="zoom-in">
+      <div className="relative z-10 text-center my-10" data-aos="zoom-in">
         <h1
-          className="font-bold text-[40px] md:text-[65px] mb-4 font-sans"
+          className="font-bold text-[40px] md:text-[65px] mb-4 mt-10 font-sans"
           data-aso="fade-up"
         >
           <span className="text-[#13ADB7]">Happiness</span> Comes <br /> from{" "}
