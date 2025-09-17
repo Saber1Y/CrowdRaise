@@ -178,8 +178,8 @@ contract CampaignFactoryTest is Test {
 
         // Create multiple campaigns
         factory.createCampaign(TITLE, DESCRIPTION, START_DATE, END_DATE, GOAL);
-        factory.createCampaign("Campaign 2", START_DATE, END_DATE, GOAL);
-        factory.createCampaign("Campaign 3", START_DATE, END_DATE, GOAL);
+        factory.createCampaign("Campaign 2", "Description 2", START_DATE, END_DATE, GOAL);
+        factory.createCampaign("Campaign 3", "Description 3", START_DATE, END_DATE, GOAL);
 
         CampaignPreview[] memory allCampaigns = factory.getAllCampaigns();
         assertEq(allCampaigns.length, 3);
